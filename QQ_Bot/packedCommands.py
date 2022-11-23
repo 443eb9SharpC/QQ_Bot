@@ -1,10 +1,10 @@
 ﻿#coding = utf-8
 import random
-from os import remove
 
 def readUserBasicInfo(user):
+    #检查是否注册
     try:
-        userInfo = open('./users/' + user + '_basicInfo.csv', mode = 'r')
+        userInfo = open('./users/' + user + '_basicInfo.csv', mode = 'r', encoding = 'utf8')
     except IOError:
         return 'Error'
     info = userInfo.read()
@@ -12,28 +12,33 @@ def readUserBasicInfo(user):
     userInfo.close()
 
     userBasicInfoDic = {}
-    userBasicInfoDic['skyDustCount'] = str(infoList[0])
+    userBasicInfoDic['skyDustAmount'] = str(infoList[0])
     userBasicInfoDic['signedDays'] = str(infoList[1])
     userBasicInfoDic['lastActivity'] = str(infoList[2])
+    userBasicInfoDic['earthDustAmount'] = str(infoList[3])
 
     return userBasicInfoDic
 
 def readUserWeaponList(user):
+    #检查是否注册
     try:
-        weaponListRaw = open('./users/' + user + '_weaponList.csv', mode = 'r')
+        weaponFile = open('./users/' + user + '_weaponList.csv', mode = 'r', encoding = 'utf8')
     except IOError:
         return 'Error'
-    weaponListRaw = weaponListRaw.read()
+    weaponListRaw = weaponFile.read()
     weaponList = weaponListRaw.split(',')
-    weaponListRaw.close()
-    weaponList.append["EOF"]
+    weaponFile.close()
+
+    userItemDic = {}
     i = 0
 
+    #读取武器列表
     while weaponList[i] != 'EOF':
         weaponName = weaponList[i]
         weaponAttack = weaponList[i + 1]
-        weaponRarityRaw = weaponList[i + 2]
+        weaponRarityRaw = int(weaponList[i + 2])
 
+        #稀有度判断
         if weaponRarityRaw > 90:
             weaponRarity = 'Lengendary'
         elif weaponRarityRaw > 70:
@@ -43,32 +48,28 @@ def readUserWeaponList(user):
         else:
             weaponRarity = 'Common'
         
+        userItemDic[weaponName] = [weaponName, weaponAttack, weaponRarityRaw, weaponRarity]
         i += 3
-
-    userItemDic = {}
-    userItemDic['weaponName'] = weaponName
-    userItemDic['weaponAttack'] = weaponAttack
-    userItemDic['weaponRarityRaw'] = weaponRarityRaw
-    userItemDic['weaponRarity'] = weaponRarity
 
     return userItemDic
 
 
 def readUserItemList(user):
     try:
-        itemListRaw = open('./users/' + user + '_itemList.csv', mode = 'r')
+        itemFile = open('./users/' + user + '_itemList.csv', mode = 'r', encoding = 'utf8')
     except IOError:
         return 'Error'
-    itemListRaw = itemListRaw.read()
+    itemListRaw = itemFile.read()
     itemList = itemListRaw.split(',')
-    itemListRaw.close()
-    itemList.append["EOF"]
+    itemFile.close()
+
+    userItemDic = {}
     i = 0
 
     while itemList[i] != 'EOF':
         itemName = itemList[i]
-        itemCount = itemList[i + 1]
-        itemRarityRaw = itemList[i + 2]
+        itemAmount = itemList[i + 1]
+        itemRarityRaw = int(itemList[i + 2])
 
         if itemRarityRaw > 90:
             itemRarity = 'Lengendary'
@@ -78,37 +79,30 @@ def readUserItemList(user):
             itemRarity = 'Rare'
         else:
             itemRarity = 'Common'
-        
-        i += 3
 
-    userItemDic = {}
-    userItemDic['itemName'] = itemName
-    userItemDic['itemCount'] = itemCount
-    userItemDic['itemRarityRaw'] = itemRarityRaw
-    userItemDic['itemRarity'] = itemRarity
+        userItemDic[itemName] = [itemName, itemAmount, itemRarityRaw, itemRarity]
+        i += 3
 
     return userItemDic
 
 
-def refresh_basicInfo(user, skyDust, signedDays, lastActivity):
-    try:
-        remove('./users/' + user + '_basicInfo.csv')
-    except IOError:
-        return 'Error'
-    userInfo = open('./users/' + user +'_basicInfo.csv', mode = 'w')
-    userInfo.write(str(skyDust) + ',' + str(signedDays) + ',' + str(lastActivity))
-    userInfo.close()
+def refreshBasicInfo(user, skyDust, signedDays, lastActivity, earthDust):
+    #重新写入信息
+    userInfoFile = open('./users/' + user +'_basicInfo.csv', mode = 'w', encoding = 'utf8')
+    userInfoFile.write(str(skyDust) + ',' + str(signedDays) + ',' + str(lastActivity) + ',' + str(earthDust) + ',EOF')
+    userInfoFile.close()
 
 
-def refresh_itemList(user, itemList):
-    if itemList[0][:5] == '天空之尘':
-        userInfo = readUserBasicInfo(user)
-        skyDust = int(userInfo[0]) + int(itemList[1])
-        refresh_basicInfo(user, skyDust, int(userInfo[1]), int(userInfo[2]))
-        return
-    else:
-        user_item = open('./users/' + user +'_itemList.csv', mode = 'a')
-        user_item.write(itemList[0] + ',' + itemList[1] + ',' + itemList[2] + ',' + itemList[3] + ',')
+def refreshWeaponList(user, weaponInfoList):
+    userWeaponFile = open('./users/' + user + '_weaponList.csv', mode = 'a', encoding = 'utf8')
+    userWeaponFile.write(str(weaponInfoList[0]) + ',' + str(weaponInfoList[1]) + ',' + str(weaponInfoList[2]) + ',' + str(weaponInfoList[3]) + ',')
+    userWeaponFile.close()
+
+
+def refreshItemList(user, itemInfoList):
+    userItemFile = open('./users/' + user +'_itemList.csv', mode = 'a', encoding = 'utf8')
+    userItemFile.write(str(itemInfoList[0]) + ',' + str(itemInfoList[1]) + ',' + str(itemInfoList[2]) + ',' + str(itemInfoList[3]) + ',')
+    userItemFile.close()
 
 
 def readActivityInfo():
@@ -133,32 +127,48 @@ def readActivityWeapon():
     #初始化数据
     activityWeaponDic = {}
     weaponNameString = ''
+    weaponNameList = []
     i = 0
 
-    while activityWeaponList[i + 3] != 'EOF':
-        weaponName = activityWeaponList[i]
+    legendaryAmount = 0
+    epicAmount = 0
+    rareAmount = 0
+    commonAmount = 0
+
+    while True:
+        #判断是否已经遍历完
+        try:
+            weaponName = activityWeaponList[i]
+        except IndexError:
+            break
         weaponAttack = activityWeaponList[i + 1]
         weaponRarityRaw = int(activityWeaponList[i + 2])
 
         if weaponRarityRaw > 90:
             weaponRarity = 'Lengendary'
+            legendaryAmount += 1
         elif weaponRarityRaw > 70:
             weaponRarity = 'Epic'
+            epicAmount += 1
         elif weaponRarityRaw > 50:
             weaponRarity = 'Rare'
-        else:
+            rareAmount += 1
+        elif weaponRarityRaw > 0:
             weaponRarity = 'Common'
+            commonAmount += 1
 
+        #此列表用于抽卡检索武器
+        weaponNameList.append(weaponName)
+        #用于返回列表
         weaponNameString += weaponName + ' | ' + weaponAttack + ' | ' + weaponRarity + '\n'
-
-        activityWeaponDic['weaponName'] = weaponName
-        activityWeaponDic['weaponAttack'] = weaponAttack
-        activityWeaponDic['weaponRarityRaw'] = weaponRarityRaw
-        activityWeaponDic['weaponRarity'] = weaponRarity
-        activityWeaponDic['weaponNameString'] = weaponNameString
-
+        activityWeaponDic[weaponName] = [weaponName, weaponAttack, weaponRarityRaw, weaponRarity, weaponNameString]
         i += 3
 
+    #此列表用于抽卡时计算索引
+    weaponAmountList = [legendaryAmount, epicAmount, rareAmount, commonAmount]
+
+    activityWeaponDic['weaponNameList'] = weaponNameList
+    activityWeaponDic['weaponAmountList'] = weaponAmountList
     return activityWeaponDic
 
 
@@ -167,78 +177,82 @@ def readActivityItem():
     activityItemRaw = activityItem.read()
     activityItemList = activityItemRaw.split(',')
 
-    #初始化数据
     activityItemDic = {}
     itemNameString = ''
+    itemNameList = []
     i = 0
 
-    while activityItemList[i + 3] != 'EOF':
-        itemName = activityItemList[i] + str(activityItemList[i + 1])
-        itemCount = activityItemList[i + 1]
+    legendaryAmount = 0
+    epicAmount = 0
+    rareAmount = 0
+    commonAmount = 0
+
+    while True:
+        try:
+            itemName = activityItemList[i] + str(activityItemList[i + 1])
+        except IndexError:
+            break
+        itemAmount = activityItemList[i + 1]
         itemRarityRaw = int(activityItemList[i + 2])
 
         if itemRarityRaw > 90:
             itemRarity = 'Lengendary'
+            legendaryAmount += 1
         elif itemRarityRaw > 70:
             itemRarity = 'Epic'
+            epicAmount += 1
         elif itemRarityRaw > 50:
             itemRarity = 'Rare'
-        else:
+            rareAmount += 1
+        elif itemRarityRaw > 0:
             itemRarity = 'Common'
+            commonAmount += 1
 
-        itemNameString += itemName + ' | ' + itemCount + ' | ' + itemRarity + '\n'
-
-        activityItemDic['itemName'] = itemName
-        activityItemDic['itemCount'] = itemCount
-        activityItemDic['itemRarityRaw'] = itemRarityRaw
-        activityItemDic['itemRarity'] = itemRarity
-        activityItemDic['itemNameString'] = itemNameString
-
+        itemNameList.append(itemName)
+        itemNameString += itemName + ' | ' + itemAmount + ' | ' + itemRarity + '\n'
+        activityItemDic[itemName] = [itemName, itemAmount, itemRarityRaw, itemRarity, itemNameString]
         i += 3
 
+    itemAmountList = [legendaryAmount, epicAmount, rareAmount, commonAmount]
+
+    activityItemDic['itemAmountList'] = itemAmountList
+    activityItemDic['itemNameList'] = itemNameList
     return activityItemDic
 
 
+#当你看到这条注释的时候你就应该知道你还没写保底机制
 def gacha():
-    activityList = read_activity()
-    rand = random.randint(1, 1000)
-    if rand % 3 > 0:
-        weaponList = activityList['weaponList']
-        weaponDic = activityList['weaponDic']
-        weaponCount = activityList['weaponCount']
-        if rand / 10 > 90:
-            randSec = random.randint(1, 100) % weaponCount[0]
-            weaponName = weaponList[randSec]
-            return weaponDic[weaponName]
-        elif rand /10 > 70:
-            randSec = random.randint(1, 100) % weaponCount[1]
-            weaponName = weaponList[randSec + weaponCount[0]]
-            return weaponDic[weaponName]
-        elif rand /10 > 50:
-            randSec = random.randint(1, 100) % weaponCount[2]
-            weaponName = weaponList[randSec + weaponCount[0] + weaponCount[1]]
-            return weaponDic[weaponName]
+    activityName = readActivityInfo()['activityName']
+    rand = random.randint(1, 100)
+
+    #偶数出武器
+    if rand % 2 == 0:
+        weaponDic = readActivityWeapon()
+        weaponNameList = weaponDic['weaponNameList']
+        weaponAmountList = weaponDic['weaponAmountList']
+        if rand > 90:
+            #计算武器索引值
+            index = rand % weaponAmountList[0]
+        elif rand > 70:
+            index = rand % weaponAmountList[1] + weaponAmountList[0]
+        elif rand > 50:
+            index = rand % weaponAmountList[2] + weaponAmountList[1] + weaponAmountList[0]
         else:
-            randSec = random.randint(1, 100) % weaponCount[3]
-            weaponName = weaponList[randSec + weaponCount[0] + weaponCount[1] + weaponCount[2]]
-            return weaponDic[weaponName]
+            index = rand % weaponAmountList[3] + weaponAmountList[2] + weaponAmountList[1] + weaponAmountList[0]
+    #返回武器名和武器种类
+        return [weaponNameList[index], 'weapon']
+    
+    #奇数出物品
     else:
-        itemList = activityList['itemList']
-        itemDic = activityList['itemDic']
-        itemCount = activityList['itemCount']
-        if rand / 10 > 90:
-            randSec = rand % itemCount[0]
-            itemName = itemList[randSec]
-            return itemDic[itemName + '95']
-        elif rand /10 > 70:
-            randSec = random.randint(1, 100) % itemCount[1]
-            itemName = itemList[randSec + itemCount[0]]
-            return itemDic[itemName + '85']
-        elif rand /10 > 50:
-            randSec = random.randint(1, 100) % itemCount[2]
-            itemName = itemList[randSec + itemCount[0] + itemCount[1]]
-            return itemDic[itemName + '55']
+        itemDic = readActivityItem()
+        itemNameList = itemDic['itemNameList']
+        itemAmountList = itemDic['itemAmountList']
+        if rand > 90:
+            index = rand % itemAmountList[0]
+        elif rand > 70:
+            index = rand % itemAmountList[1] + itemAmountList[0]
+        elif rand > 50:
+            index = rand % itemAmountList[2] + itemAmountList[1] + itemAmountList[0]
         else:
-            randSec = random.randint(1, 100) % itemCount[3]
-            itemName = itemList[randSec + itemCount[0] + itemCount[1] + itemCount[2]]
-            return itemDic[itemName + '5']
+            index = rand % itemAmountList[3] + itemAmountList[2] + itemAmountList[1] + itemAmountList[0]
+        return [itemNameList[index], 'item']
