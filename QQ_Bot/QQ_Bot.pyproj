@@ -22,7 +22,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="config.py" />
-    <Compile Include="example.py" />
     <Compile Include="packedCommands.py" />
     <Compile Include="main.py" />
     <Compile Include="__init__.py" />

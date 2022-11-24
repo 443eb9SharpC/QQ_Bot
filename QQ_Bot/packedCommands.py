@@ -4,20 +4,22 @@ import random
 def readUserBasicInfo(user):
     #检查是否注册
     try:
-        userInfo = open('./users/' + user + '_basicInfo.csv', mode = 'r', encoding = 'utf8')
+        userBasicInfoFile = open('./users/' + user + '_basicInfo.csv', mode = 'r', encoding = 'utf8')
     except IOError:
         return 'Error'
-    info = userInfo.read()
+    info = userBasicInfoFile.read()
     infoList = info.split(',')
-    userInfo.close()
+    userBasicInfoFile.close()
 
     userBasicInfoDic = {}
     userBasicInfoDic['skyDustAmount'] = str(infoList[0])
     userBasicInfoDic['signedDays'] = str(infoList[1])
     userBasicInfoDic['lastActivity'] = str(infoList[2])
     userBasicInfoDic['earthDustAmount'] = str(infoList[3])
+    userBasicInfoDic['continuousSigned'] = str(infoList[4])
 
     return userBasicInfoDic
+
 
 def readUserWeaponList(user):
     #检查是否注册
@@ -27,16 +29,20 @@ def readUserWeaponList(user):
         return 'Error'
     weaponListRaw = weaponFile.read()
     weaponList = weaponListRaw.split(',')
+    weaponList.pop()
     weaponFile.close()
 
     userItemDic = {}
     i = 0
 
     #读取武器列表
-    while weaponList[i] != 'EOF':
-        weaponName = weaponList[i]
-        weaponAttack = weaponList[i + 1]
-        weaponRarityRaw = int(weaponList[i + 2])
+    while True:
+        try:
+            weaponName = weaponList[i]
+            weaponAttack = weaponList[i + 1]
+            weaponRarityRaw = int(weaponList[i + 2])
+        except IndexError:
+            break
 
         #稀有度判断
         if weaponRarityRaw > 90:
@@ -61,15 +67,19 @@ def readUserItemList(user):
         return 'Error'
     itemListRaw = itemFile.read()
     itemList = itemListRaw.split(',')
+    itemList.pop()
     itemFile.close()
 
     userItemDic = {}
     i = 0
 
-    while itemList[i] != 'EOF':
-        itemName = itemList[i]
-        itemAmount = itemList[i + 1]
-        itemRarityRaw = int(itemList[i + 2])
+    while True:
+        try:
+            itemName = itemList[i]
+            itemAmount = itemList[i + 1]
+            itemRarityRaw = int(itemList[i + 2])
+        except IndexError:
+            break
 
         if itemRarityRaw > 90:
             itemRarity = 'Lengendary'
@@ -95,13 +105,13 @@ def refreshBasicInfo(user, skyDust, signedDays, lastActivity, earthDust):
 
 def refreshWeaponList(user, weaponInfoList):
     userWeaponFile = open('./users/' + user + '_weaponList.csv', mode = 'a', encoding = 'utf8')
-    userWeaponFile.write(str(weaponInfoList[0]) + ',' + str(weaponInfoList[1]) + ',' + str(weaponInfoList[2]) + ',' + str(weaponInfoList[3]) + ',')
+    userWeaponFile.write(str(weaponInfoList[0]) + ',' + str(weaponInfoList[1]) + ',' + str(weaponInfoList[2]) + ',')
     userWeaponFile.close()
 
 
 def refreshItemList(user, itemInfoList):
     userItemFile = open('./users/' + user +'_itemList.csv', mode = 'a', encoding = 'utf8')
-    userItemFile.write(str(itemInfoList[0]) + ',' + str(itemInfoList[1]) + ',' + str(itemInfoList[2]) + ',' + str(itemInfoList[3]) + ',')
+    userItemFile.write(str(itemInfoList[0]) + ',' + str(itemInfoList[1]) + ',' + str(itemInfoList[2]) + ',')
     userItemFile.close()
 
 
@@ -222,7 +232,6 @@ def readActivityItem():
 
 #当你看到这条注释的时候你就应该知道你还没写保底机制
 def gacha():
-    activityName = readActivityInfo()['activityName']
     rand = random.randint(1, 100)
 
     #偶数出武器
