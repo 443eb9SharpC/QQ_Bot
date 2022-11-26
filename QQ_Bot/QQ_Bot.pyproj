@@ -22,8 +22,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="config.py" />
-    <Compile Include="packedCommands.py" />
+    <Compile Include="otherModule.py" />
     <Compile Include="main.py" />
+    <Compile Include="readModule.py" />
+    <Compile Include="refreshModule.py" />
     <Compile Include="__init__.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />

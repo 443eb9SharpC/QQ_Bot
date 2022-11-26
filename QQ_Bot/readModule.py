@@ -1,5 +1,4 @@
 ﻿#coding = utf-8
-import random
 
 def readUserBasicInfo(user):
     #检查是否注册
@@ -12,11 +11,15 @@ def readUserBasicInfo(user):
     userBasicInfoFile.close()
 
     userBasicInfoDic = {}
-    userBasicInfoDic['skyDustAmount'] = str(infoList[0])
-    userBasicInfoDic['signedDays'] = str(infoList[1])
-    userBasicInfoDic['lastActivity'] = str(infoList[2])
-    userBasicInfoDic['earthDustAmount'] = str(infoList[3])
-    userBasicInfoDic['continuousSigned'] = str(infoList[4])
+    userBasicInfoDic['skyDustAmount'] = int(infoList[0])
+    userBasicInfoDic['signedDays'] = int(infoList[1])
+    userBasicInfoDic['lastActivity'] = int(infoList[2])
+    userBasicInfoDic['earthDustAmount'] = int(infoList[3])
+    userBasicInfoDic['continuousSigned'] = int(infoList[4])
+    userBasicInfoDic['currentLevel'] = int(infoList[5])
+    userBasicInfoDic['basicHP'] = int(infoList[6])
+    userBasicInfoDic['basicAttack'] = int(infoList[7])
+    userBasicInfoDic['totalExp'] = int(infoList[8])
 
     return userBasicInfoDic
 
@@ -94,25 +97,6 @@ def readUserItemList(user):
         i += 3
 
     return userItemDic
-
-
-def refreshBasicInfo(user, skyDust, signedDays, lastActivity, earthDust):
-    #重新写入信息
-    userInfoFile = open('./users/' + user +'_basicInfo.csv', mode = 'w', encoding = 'utf8')
-    userInfoFile.write(str(skyDust) + ',' + str(signedDays) + ',' + str(lastActivity) + ',' + str(earthDust) + ',EOF')
-    userInfoFile.close()
-
-
-def refreshWeaponList(user, weaponInfoList):
-    userWeaponFile = open('./users/' + user + '_weaponList.csv', mode = 'a', encoding = 'utf8')
-    userWeaponFile.write(str(weaponInfoList[0]) + ',' + str(weaponInfoList[1]) + ',' + str(weaponInfoList[2]) + ',')
-    userWeaponFile.close()
-
-
-def refreshItemList(user, itemInfoList):
-    userItemFile = open('./users/' + user +'_itemList.csv', mode = 'a', encoding = 'utf8')
-    userItemFile.write(str(itemInfoList[0]) + ',' + str(itemInfoList[1]) + ',' + str(itemInfoList[2]) + ',')
-    userItemFile.close()
 
 
 def readActivityInfo():
@@ -228,40 +212,3 @@ def readActivityItem():
     activityItemDic['itemAmountList'] = itemAmountList
     activityItemDic['itemNameList'] = itemNameList
     return activityItemDic
-
-
-#当你看到这条注释的时候你就应该知道你还没写保底机制
-def gacha():
-    rand = random.randint(1, 100)
-
-    #偶数出武器
-    if rand % 2 == 0:
-        weaponDic = readActivityWeapon()
-        weaponNameList = weaponDic['weaponNameList']
-        weaponAmountList = weaponDic['weaponAmountList']
-        if rand > 90:
-            #计算武器索引值
-            index = rand % weaponAmountList[0]
-        elif rand > 70:
-            index = rand % weaponAmountList[1] + weaponAmountList[0]
-        elif rand > 50:
-            index = rand % weaponAmountList[2] + weaponAmountList[1] + weaponAmountList[0]
-        else:
-            index = rand % weaponAmountList[3] + weaponAmountList[2] + weaponAmountList[1] + weaponAmountList[0]
-    #返回武器名和武器种类
-        return [weaponNameList[index], 'weapon']
-    
-    #奇数出物品
-    else:
-        itemDic = readActivityItem()
-        itemNameList = itemDic['itemNameList']
-        itemAmountList = itemDic['itemAmountList']
-        if rand > 90:
-            index = rand % itemAmountList[0]
-        elif rand > 70:
-            index = rand % itemAmountList[1] + itemAmountList[0]
-        elif rand > 50:
-            index = rand % itemAmountList[2] + itemAmountList[1] + itemAmountList[0]
-        else:
-            index = rand % itemAmountList[3] + itemAmountList[2] + itemAmountList[1] + itemAmountList[0]
-        return [itemNameList[index], 'item']
