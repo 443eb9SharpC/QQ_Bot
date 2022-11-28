@@ -16,12 +16,26 @@ def readUserBasicInfo(user):
     userBasicInfoDic['lastActivity'] = int(infoList[2])
     userBasicInfoDic['earthDustAmount'] = int(infoList[3])
     userBasicInfoDic['continuousSigned'] = int(infoList[4])
-    userBasicInfoDic['currentLevel'] = int(infoList[5])
-    userBasicInfoDic['basicHP'] = int(infoList[6])
-    userBasicInfoDic['basicAttack'] = int(infoList[7])
-    userBasicInfoDic['totalExp'] = int(infoList[8])
 
     return userBasicInfoDic
+
+
+def readInGameInfo(user):
+    try:
+        inGameInfoFile = open('./users/' + user + '_inGameInfo.csv', mode = 'r', encoding = 'utf8')
+    except IOError:
+        return 'Error'
+    inGameInfoListRaw = inGameInfoFile.read()
+    inGameInfoList = inGameInfoListRaw.split(',')
+    inGameInfoFile.close()
+
+    inGameInfoDic = {}
+    inGameInfoDic['currentLevel'] = int(inGameInfoList[0])
+    inGameInfoDic['basicHP'] = int(inGameInfoList[1])
+    inGameInfoDic['basicAttack'] = int(inGameInfoList[2])
+    inGameInfoDic['totalExp'] = int(inGameInfoList[3])
+
+    return inGameInfoDic
 
 
 def readUserWeaponList(user):
@@ -155,7 +169,7 @@ def readActivityWeapon():
         weaponNameList.append(weaponName)
         #用于返回列表
         weaponNameString += weaponName + ' | ' + weaponAttack + ' | ' + weaponRarity + '\n'
-        activityWeaponDic[weaponName] = [weaponName, weaponAttack, weaponRarityRaw, weaponRarity, weaponNameString]
+        activityWeaponDic[weaponName] = [weaponName, weaponAttack, weaponRarityRaw, weaponRarity]
         i += 3
 
     #此列表用于抽卡时计算索引
@@ -163,6 +177,7 @@ def readActivityWeapon():
 
     activityWeaponDic['weaponNameList'] = weaponNameList
     activityWeaponDic['weaponAmountList'] = weaponAmountList
+    activityWeaponDic['weaponNameString'] = weaponNameString
     return activityWeaponDic
 
 
@@ -204,11 +219,12 @@ def readActivityItem():
 
         itemNameList.append(itemName)
         itemNameString += itemName + ' | ' + itemAmount + ' | ' + itemRarity + '\n'
-        activityItemDic[itemName] = [itemName, itemAmount, itemRarityRaw, itemRarity, itemNameString]
+        activityItemDic[itemName] = [itemName, itemAmount, itemRarityRaw, itemRarity]
         i += 3
 
     itemAmountList = [legendaryAmount, epicAmount, rareAmount, commonAmount]
 
     activityItemDic['itemAmountList'] = itemAmountList
     activityItemDic['itemNameList'] = itemNameList
+    activityItemDic['itemNameString'] = itemNameString
     return activityItemDic

@@ -41,14 +41,12 @@ def gacha():
 
 def genUserBasicInfoList(user):
     userBasicInfoDic = readModule.readUserBasicInfo(user)
+    if userBasicInfoDic == 'Error':
+        return '未找到用户，请先注册'
     skyDustAmount = userBasicInfoDic['skyDustAmount']
     signedDays = userBasicInfoDic['signedDays']
-    lastActivity = userBasicInfoDic['lastActivity']
     earthDustAmount = userBasicInfoDic['earthDustAmount']
     continuousSigned = userBasicInfoDic['continuousSigned']
-    currentLevel = userBasicInfoDic['currentLevel']
-    basicHP = userBasicInfoDic['basicHP']
-    basicAttack = userBasicInfoDic['basicAttack']
-    totalExp = userBasicInfoDic['totalExp']
 
-    form = '当前等级：'
+    form = '\n天空之尘数量：' + str(skyDustAmount) + '\n累计签到：' + str(signedDays) + '\n连续签到：' + str(continuousSigned) + '\n大地之烬：' + str(earthDustAmount)
+    return form

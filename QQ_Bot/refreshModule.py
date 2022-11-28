@@ -1,11 +1,16 @@
 ﻿#coding = utf-8
 import readModule
 
-def refreshBasicInfo(user, skyDustAmount, signedDays, lastActivity, earthDustAmount, continuousSigned, currentLevel, basicHP, basicAttack, totalExp):
+def refreshBasicInfo(user, skyDustAmount, signedDays, lastActivity, earthDustAmount, continuousSigned):
     #重新写入信息
     userInfoFile = open('./users/' + user +'_basicInfo.csv', mode = 'w', encoding = 'utf8')
-    userInfoFile.write(str(skyDustAmount) + ',' + str(signedDays) + ',' + str(lastActivity) + ',' + str(earthDustAmount) + ',' + str(continuousSigned) + ',' + str(currentLevel) + ',' + str(basicHP) + ',' + str(basicAttack) + ',' + str(totalExp))
+    userInfoFile.write(str(skyDustAmount) + ',' + str(signedDays) + ',' + str(lastActivity) + ',' + str(earthDustAmount) + ',' + str(continuousSigned))
     userInfoFile.close()
+    
+
+def refreshInGameInfo(user, currentLevel, basicHP, basicAttack, totalExp):
+    inGameInfoFile = open('./users/' + user + '_inGameInfo.csv', mode = 'w', encoding = 'utf8')
+    inGameInfoFile.write(str(currentLevel) + ',' + str(basicHP) + ',' + str(basicAttack) + ',' + str(totalExp))
 
 
 def refreshWeaponList(user, weaponInfoList):

@@ -47,12 +47,16 @@ class MyClient(qq.Client):
             #文件初始化
             userInfo.close()
             userInfo = open('./users/' + str(message.author) + '_basicInfo.csv', mode = 'x', encoding = 'utf8')
-            #对应 天空之尘,累计签到天数,上一次活跃,大地之烬,连续签到天数,等级,基础生命值,基础攻击力,总经验值
-            userInfo.write('0,0,0,0,0,0,2000,50,0')
+            #对应 天空之尘,累计签到天数,上一次活跃,大地之烬
+            userInfo.write('0,0,0,0,0')
             userInfo.close()
             userInfo = open('./users/' + str(message.author) + '_weaponList.csv', mode = 'x', encoding = 'utf8')
             userInfo.close()
             userInfo = open('./users/' + str(message.author) + '_itemList.csv', mode = 'x', encoding = 'utf8')
+            userInfo.close()
+            userInfo = open('./users/' + str(message.author) + '_inGameInfo.csv', mode = 'x')
+            #对应 连续签到天数,等级,基础生命值,基础攻击力,总经验值
+            userInfo.write('0,2000,50,0')
             userInfo.close()
 
             await message.reply('注册成功', mention_author = message.author)
@@ -64,12 +68,8 @@ class MyClient(qq.Client):
 
 
         if '/个人信息' in message.content:
-            infoDic = readModule.readUserBasicInfo(str(message.author))
-            if infoDic == 'Error':
-                await message.reply('查询失败，请先注册', mention_author=message.author)
-            else:
-                await message.reply('\n天空之尘：' + infoDic['skyDustAmount'] + '大地之烬：' + infoDic['earthDustAmount'] + '\n累计签到：' + infoDic['signedDays'] + '\n连续签到：' + infoDic[''], mention_author = message.author)
-
+            await message.reply(otherModule.genUserBasicInfoList(str(message.author)), mention_author = message.author)
+            
 
         """
         个人物品模块
@@ -81,7 +81,7 @@ class MyClient(qq.Client):
             itemDic = readModule.readUserItemList(str(message.author))
 
             if weaponDic == 'Error' or itemDic == 'Error':
-                message.reply('查询失败，请先注册', mention_author=message.author)
+                message.reply('未找到用户，请先注册', mention_author=message.author)
                 return
 
             msg='\n武器名 | 攻击力 | 稀有度\n'
@@ -93,7 +93,7 @@ class MyClient(qq.Client):
 
             for key in itemDic:
                 itemInfo = itemDic[key]
-                msg += itemInfo[0] + ' | ' + itemInfo[1] + ' | ' + itemInfo[3] + ' | '
+                msg += itemInfo[0] + ' | ' + itemInfo[1] + ' | ' + itemInfo[3] + '\n'
 
             await message.reply(msg, mention_author = message.author)
 
@@ -104,7 +104,6 @@ class MyClient(qq.Client):
 
 
         if '/签到' in message.content:
-            await message.reply('正在签到', mention_author = message.author)
             #检测签到间隔时间
             currentTime = int(time.time() // 86400)
             infoList = readModule.readUserBasicInfo(str(message.author))
@@ -124,8 +123,8 @@ class MyClient(qq.Client):
                     #重置连续签到
                     continuousSigned = 1
                 signedDays = infoList['signedDays'] + 1
-                skyDustAmount += 10
-                refreshModule.refreshBasicInfo(str(message.author), skyDustAmount, signedDays, currentTime, infoList['earthDustAmount'], infoList['countinuousSigned'], infoList['currentLevel'], infoList['infoLibasicHP'], infoList['basicAttack'], infoList['totalExp'])
+                skyDustAmount = infoList['skyDustAmount'] + 10
+                refreshModule.refreshBasicInfo(str(message.author), skyDustAmount, signedDays, currentTime, infoList['earthDustAmount'], infoList['continuousSigned'])
 
                 if continuousSigned > 3:
                     await message.reply('你目前有' + str(skyDustAmount) + '个天空之尘，已累计签到' + str(signedDays) + '天，已连续签到' + str(continuousSigned) + '天，额外获得' + skyDustAmount - 10 + '个天空之尘', mention_author = message.author)
@@ -193,7 +192,7 @@ class MyClient(qq.Client):
                     await message.reply('恭喜你获得了：' + elemName, mention_author = message.author)
                     #保存武器
                     refreshModule.refreshWeaponList(str(message.author), weaponInfoList)
-            else:
+            elif elemType == 'item':
                 #检测是否为天空之尘
                 if elemName[:4] == '天空之尘':
                     skyDustAmount += int(elemName[4:len(elemName)])
@@ -204,7 +203,7 @@ class MyClient(qq.Client):
                     refreshModule.refreshItemList(str(message.author), itemInfoList)
 
             #保存基础数据
-            refreshModule.refreshBasicInfo(str(message.author), skyDust, userInfoDic['signedDays'], userInfoDic['lastActivity'], earthDust, userInfoDic['countinuousSigned'], userInfoDic['currentLevel'], userInfoDic['basicHP'], userInfoDic['basicAttack'], userInfoDic['totalExp'])
+            refreshModule.refreshBasicInfo(str(message.author), skyDust, userInfoDic['signedDays'], userInfoDic['lastActivity'], earthDust, userInfoDic['continuousSigned'])
 
 
         """
@@ -256,10 +255,10 @@ class MyClient(qq.Client):
                         await message.reply('恭喜你获得了：' + elemName, mention_author = message.author)
                         #保存武器
                         refreshModule.refreshWeaponList(str(message.author), weaponInfoList)
-                else:
+                elif elemType == 'item':
                     #检测是否为天空之尘
-                    if elemName[:5] == '天空之尘':
-                        skyDustAmount += int(elemName[4:len(elemName)])                    
+                    if elemName[:4] == '天空之尘':
+                        skyDustAmount += int(elemName[4:len(elemName)])
                         await message.reply('恭喜你获得了' + itemInfoList[1] + '个天空之尘', mention_author = message.author)
                     else:
                         await message.reply('恭喜你获得了' + itemInfoList[1] + '个' + elemName, mention_author = message.author)
@@ -267,7 +266,7 @@ class MyClient(qq.Client):
                         refreshModule.refreshItemList(str(message.author), itemInfoList)
 
                 #保存基础数据
-                refreshModule.refreshBasicInfo(str(message.author), skyDust, userInfoDic['signedDays'], userInfoDic['lastActivity'], earthDust, userInfoDic['countinuousSigned'], userInfoDic['currentLevel'], userInfoDic['basicHP'], userInfoDic['basicAttack'], userInfoDic['totalExp'])
+                refreshModule.refreshBasicInfo(str(message.author), skyDustAmount, userInfoDic['signedDays'], userInfoDic['lastActivity'], earthDustAmount, userInfoDic['continuousSigned'])
 
 
         """
@@ -282,29 +281,32 @@ class MyClient(qq.Client):
             try:
                 user1 = str(message.author)
                 user2 = challengeList[1]
+                await message.reply('已向' + user2 + '发出请求', mention_author = message.author)
             except IndexError:
                 await message.reply('请输入正确的命令格式：/对战||[str:对方的名字]', mention_author = message.author)
                 return
+                
+            def check(message):
+                return message.author == 'NULL'
 
-            def checkAns(message, user2):
-                return message.author == user2
             #超时或拒绝
             try:
-                answer = await self.wait_for('message', timeout = 60, check = checkAns)
+                answer = await client.wait_for('message', timeout = 60, check = check)
             except asyncio.TimeoutError:
                 message.reply('对方超出1分钟未给出回应', mention_author = message.author)
-            if answer == '拒绝':
+            if str(answer) == '拒绝':
                 await message.reply('对方拒绝了你的对战请求', mention_author = message.author)
                 return
+            elif str(answer) == '接受':
+                await message.reply('对方接受了你的对战请求', mention_author = message.author)
+            else:
+                await message.reply('请不要回答除结束与拒绝之外的其他答案', mention_author = user2)
             #开始对战
 
 
         """
         反馈模块
         """
-        if '/反馈' in message.content():
-            await message.reply('功能开发中，敬请期待', mention_author = message.author)
-            return
 
 
         """
@@ -327,11 +329,11 @@ class MyClient(qq.Client):
                     #修改指定用户的天空之尘
                     if commandList[1] == 'modifySkyDustAmount':
                         userInfoDic = readModule.readUserBasicInfo(str(commandList[2]))
-                        res = refreshModule.refreshBasicInfo(str(commandList[2]), int(commandList[3]), userInfoDic['signedDays'], userInfoDic['lastActivity'], userInfoDic['earthDustAmount'],userInfoDic['countinuousSigned'], userInfoDic['currentLevel'], userInfoDic['basicHP'], userInfoDic['basicAttack'], userInfoDic['totalExp'])
+                        res = refreshModule.refreshBasicInfo(str(commandList[2]), int(commandList[3]), userInfoDic['signedDays'], userInfoDic['lastActivity'], userInfoDic['earthDustAmount'],userInfoDic['continuousSigned'])
                         if res == 'Error':
                             await message.reply('Unknow user: ' + str(commandList[2]))
                         else:
-                            await message.reply('Successfully modified ' + str(commandList[2]) + '\'s sky dust counts.')
+                            await message.reply('Successfully modified ' + str(commandList[2]) + '\'s sky dust amount.')
                         return
 
                     #展示指定用户个人信息
