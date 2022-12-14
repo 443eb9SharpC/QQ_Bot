@@ -25,7 +25,7 @@ class MyClient(qq.Client):
             answer = random.randint(1, 10)
 
             try:
-                guess = await client.wait_for('message', check=is_correct(message), timeout=60.0)
+                guess = await client.wait_for('message', check=is_correct(), timeout=60.0)
             except asyncio.TimeoutError:
                 return await message.channel.send(f'抱歉，你花了太长时间，答案是{answer}。')
 

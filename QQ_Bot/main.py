@@ -47,15 +47,15 @@ class MyClient(qq.Client):
             #文件初始化
             userInfo.close()
             userInfo = open('./users/' + str(message.author) + '_basicInfo.csv', mode = 'x', encoding = 'utf8')
-            #对应 天空之尘,累计签到天数,上一次活跃,大地之烬
+            #对应 天空之尘,累计签到天数,上一次活跃,大地之烬,连续签到天数
             userInfo.write('0,0,0,0,0')
             userInfo.close()
             userInfo = open('./users/' + str(message.author) + '_weaponList.csv', mode = 'x', encoding = 'utf8')
             userInfo.close()
             userInfo = open('./users/' + str(message.author) + '_itemList.csv', mode = 'x', encoding = 'utf8')
             userInfo.close()
-            userInfo = open('./users/' + str(message.author) + '_inGameInfo.csv', mode = 'x')
-            #对应 连续签到天数,等级,基础生命值,基础攻击力,总经验值
+            userInfo = open('./users/' + str(message.author) + '_inGameInfo.csv', mode = 'x', encoding = 'utf8')
+            #对应 等级,基础生命值,基础攻击力,总经验值
             userInfo.write('0,2000,50,0')
             userInfo.close()
 
@@ -124,7 +124,7 @@ class MyClient(qq.Client):
                     continuousSigned = 1
                 signedDays = infoList['signedDays'] + 1
                 skyDustAmount = infoList['skyDustAmount'] + 10
-                refreshModule.refreshBasicInfo(str(message.author), skyDustAmount, signedDays, currentTime, infoList['earthDustAmount'], infoList['continuousSigned'])
+                refreshModule.refreshBasicInfo(str(message.author), skyDustAmount, signedDays, currentTime, infoList['earthDustAmount'], continuousSigned)
 
                 if continuousSigned > 3:
                     await message.reply('你目前有' + str(skyDustAmount) + '个天空之尘，已累计签到' + str(signedDays) + '天，已连续签到' + str(continuousSigned) + '天，额外获得' + skyDustAmount - 10 + '个天空之尘', mention_author = message.author)
@@ -285,22 +285,23 @@ class MyClient(qq.Client):
             except IndexError:
                 await message.reply('请输入正确的命令格式：/对战||[str:对方的名字]', mention_author = message.author)
                 return
-                
-            def check(message):
-                return message.author == 'NULL'
+
+            def check(m):
+                return m.author == user2
 
             #超时或拒绝
             try:
-                answer = await client.wait_for('message', timeout = 60, check = check)
+                answer = await client.wait_for('message', timeout = 60)
             except asyncio.TimeoutError:
                 message.reply('对方超出1分钟未给出回应', mention_author = message.author)
+                return
             if str(answer) == '拒绝':
                 await message.reply('对方拒绝了你的对战请求', mention_author = message.author)
                 return
             elif str(answer) == '接受':
                 await message.reply('对方接受了你的对战请求', mention_author = message.author)
             else:
-                await message.reply('请不要回答除结束与拒绝之外的其他答案', mention_author = user2)
+                await message.reply('请不要回答除接受与拒绝之外的其他答案', mention_author = user2)
             #开始对战
 
 
