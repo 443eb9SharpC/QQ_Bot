@@ -2,6 +2,7 @@
 import asyncio
 import qq
 import time
+import pandas
 from config import appid, token
 import logging
 
@@ -17,6 +18,9 @@ class MyClient(qq.Client):
         print('------')
 
     async def on_message(self, message: qq.Message):
+        if str(message.author) != '443eb9#C':
+            await message.reply('机器人正在进行大型维护，请耐心等待', mention_author = message.author)
+
         # 我们不希望机器人回复自己
         if message.author.id == self.user.id:
             return
@@ -279,29 +283,29 @@ class MyClient(qq.Client):
             challengeList = challenge.split('||')
             #检查命令格式
             try:
-                user1 = str(message.author)
                 user2 = challengeList[1]
-                await message.reply('已向' + user2 + '发出请求', mention_author = message.author)
+                await message.reply('正在等待' + user2 + '作出回答...', mention_author = message.author)
             except IndexError:
                 await message.reply('请输入正确的命令格式：/对战||[str:对方的名字]', mention_author = message.author)
                 return
 
-            def check(m):
-                return m.author == user2
+            def verify(msg):
+                return str(msg.author) == user2
 
             #超时或拒绝
             try:
-                answer = await client.wait_for('message', timeout = 60)
+                answer = await client.wait_for(event = 'message', check = verify, timeout = 60)
             except asyncio.TimeoutError:
-                message.reply('对方超出1分钟未给出回应', mention_author = message.author)
+                await message.reply('对方超出1分钟未给出回应', mention_author = message.author)
                 return
-            if str(answer) == '拒绝':
+
+            if '拒绝' in answer.content:
                 await message.reply('对方拒绝了你的对战请求', mention_author = message.author)
                 return
-            elif str(answer) == '接受':
+            elif '接受' in answer.content:
                 await message.reply('对方接受了你的对战请求', mention_author = message.author)
             else:
-                await message.reply('请不要回答除接受与拒绝之外的其他答案', mention_author = user2)
+                await message.reply('请不要回答除接受与拒绝之外的其他答案', mention_author = answer.author)
             #开始对战
 
 
