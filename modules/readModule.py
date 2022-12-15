@@ -1,4 +1,5 @@
-﻿#coding = utf-8
+#coding = utf-8
+import pandas
 
 def readUserBasicInfo(user):
     #检查是否注册
@@ -36,45 +37,6 @@ def readInGameInfo(user):
     inGameInfoDic['totalExp'] = int(inGameInfoList[3])
 
     return inGameInfoDic
-
-
-def readUserWeaponList(user):
-    #检查是否注册
-    try:
-        weaponFile = open('./users/' + user + '_weaponList.csv', mode = 'r', encoding = 'utf8')
-    except IOError:
-        return 'Error'
-    weaponListRaw = weaponFile.read()
-    weaponList = weaponListRaw.split(',')
-    weaponList.pop()
-    weaponFile.close()
-
-    userItemDic = {}
-    i = 0
-
-    #读取武器列表
-    while True:
-        try:
-            weaponName = weaponList[i]
-            weaponAttack = weaponList[i + 1]
-            weaponRarityRaw = int(weaponList[i + 2])
-        except IndexError:
-            break
-
-        #稀有度判断
-        if weaponRarityRaw > 90:
-            weaponRarity = 'Lengendary'
-        elif weaponRarityRaw > 70:
-            weaponRarity = 'Epic'
-        elif weaponRarityRaw > 50:
-            weaponRarity = 'Rare'
-        else:
-            weaponRarity = 'Common'
-        
-        userItemDic[weaponName] = [weaponName, weaponAttack, weaponRarityRaw, weaponRarity]
-        i += 3
-
-    return userItemDic
 
 
 def readUserItemList(user):

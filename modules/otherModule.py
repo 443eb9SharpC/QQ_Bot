@@ -1,6 +1,8 @@
-﻿#coding = utf-8
+#coding = utf-8
 import random
-import readModule
+import pandas
+
+import modules.readModule as readModule
 
 #当你看到这条注释的时候你就应该知道你还没写保底机制
 def gacha():
@@ -39,9 +41,10 @@ def gacha():
         return [itemNameList[index], 'item']
     
 
-def genUserBasicInfoList(user):
-    userBasicInfoDic = readModule.readUserBasicInfo(user)
-    if userBasicInfoDic == 'Error':
+def genUserBasicInfoList(f_user):
+    try:
+        userBasicInfoDic = pandas.read_json('./users/' + f_user + '_basicInfo.json', typ = 'series')
+    except Exception:
         return '未找到用户，请先注册'
     skyDustAmount = userBasicInfoDic['skyDustAmount']
     signedDays = userBasicInfoDic['signedDays']
@@ -50,3 +53,16 @@ def genUserBasicInfoList(user):
 
     form = '\n天空之尘数量：' + str(skyDustAmount) + '\n累计签到：' + str(signedDays) + '\n连续签到：' + str(continuousSigned) + '\n大地之烬：' + str(earthDustAmount)
     return form
+
+
+def convertToOutputForm(f_pandasForm: pandas.DataFrame, f_formType):
+    match f_formType:
+        case 'weapon':
+            res = '武器名 | 攻击力 | 稀有度'
+            for row in f_pandasForm.iterrows():
+                res += row['weaponName'] + ' | ' + row['weaponAttack'] + ' | ' + row['weaponRarity']
+        case 'item':
+            res = '物品名 | 数量 |稀有度'
+            for row in f_pandasForm.iterrows():
+                res += row['itemName'] + ' | ' + row['itemAmount'] + ' | ' + row['itemRarity']
+    return res

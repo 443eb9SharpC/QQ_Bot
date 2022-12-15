@@ -1,4 +1,4 @@
-﻿#coding = utf-8
+#coding = utf-8
 import asyncio
 import qq
 import time
@@ -6,11 +6,11 @@ import pandas
 from config import appid, token
 import logging
 
-import readModule
-import refreshModule
-import otherModule
+import modules.readModule as readModule
+import modules.refreshModule as refreshModule
+import modules.otherModule as otherModule
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level = logging.DEBUG)
 
 class MyClient(qq.Client):
     async def on_ready(self):
@@ -18,12 +18,20 @@ class MyClient(qq.Client):
         print('------')
 
     async def on_message(self, message: qq.Message):
-        if str(message.author) != '443eb9#C':
-            await message.reply('机器人正在进行大型维护，请耐心等待', mention_author = message.author)
-
         # 我们不希望机器人回复自己
         if message.author.id == self.user.id:
             return
+
+        if str(message.author) != '443eb9#C':
+            await message.reply('机器人正在进行大型维护，请耐心等待', mention_author = message.author)
+
+
+        """
+        做作业模块
+        """
+        if '/作业' in message.content:
+            await message.reply('当前没有作业', mention_author = message.author)
+
 
         """
         菜单模块
@@ -43,25 +51,26 @@ class MyClient(qq.Client):
 
         if '/注册' in message.content:
             #尝试增加文件
+            user = str(message.author)
             try:
-                userInfo = open('./users/' + str(message.author) + '.isregistered', mode = 'x', encoding = 'utf8')
+                userBasicInfo = open('./users/' + user + '.isregistered', mode = 'x', encoding = 'utf8')
             except IOError:
                 await message.reply('注册失败，请不要重复注册', mention_author=message.author)
                 return
             #文件初始化
-            userInfo.close()
-            userInfo = open('./users/' + str(message.author) + '_basicInfo.csv', mode = 'x', encoding = 'utf8')
-            #对应 天空之尘,累计签到天数,上一次活跃,大地之烬,连续签到天数
-            userInfo.write('0,0,0,0,0')
-            userInfo.close()
-            userInfo = open('./users/' + str(message.author) + '_weaponList.csv', mode = 'x', encoding = 'utf8')
-            userInfo.close()
-            userInfo = open('./users/' + str(message.author) + '_itemList.csv', mode = 'x', encoding = 'utf8')
-            userInfo.close()
-            userInfo = open('./users/' + str(message.author) + '_inGameInfo.csv', mode = 'x', encoding = 'utf8')
-            #对应 等级,基础生命值,基础攻击力,总经验值
-            userInfo.write('0,2000,50,0')
-            userInfo.close()
+            userBasicInfo.close()
+
+            userBasicInfo = pandas.Series(index = ['skyDustAmount', 'signedDays', 'lastActivity', 'earthDustAmount', 'continuousSigned'], data = [0, 0, 0, 0, 0])
+            userBasicInfo.to_json('./users/' + user + '_basicInfo.json', indent = 4)
+
+            userBasicInfo = pandas.DataFrame(columns = ['weaponName', 'weaponAttack', 'weaponRarity', 'weaponRarityRaw'])
+            userBasicInfo.to_json('./users/' + user + '_weaponForm.json', indent = 4, orient = 'index')
+
+            userBasicInfo = pandas.DataFrame(columns = ['itemName', 'itemAmount', 'itemRarity', 'itemRarityRaw'])
+            userBasicInfo.to_json('./users/' + user + '_itemForm.json', indent = 4, orient = 'index')
+
+            userBasicInfo = pandas.Series(index = ['currentLevel', 'basicHP', 'basicAttack', 'totalExp'], data = [0, 2000, 50, 0])
+            userBasicInfo.to_json('./users/' + user + '_inGameInfo.json', indent = 4)
 
             await message.reply('注册成功', mention_author = message.author)
             
@@ -72,7 +81,7 @@ class MyClient(qq.Client):
 
 
         if '/个人信息' in message.content:
-            await message.reply(otherModule.genUserBasicInfoList(str(message.author)), mention_author = message.author)
+            await message.reply(otherModule.genUserBasicInfoList(f_user = str(message.author)), mention_author = message.author)
             
 
         """
@@ -81,26 +90,29 @@ class MyClient(qq.Client):
 
 
         if '/个人物品' in message.content:
-            weaponDic = readModule.readUserWeaponList(str(message.author))
-            itemDic = readModule.readUserItemList(str(message.author))
+            user = str(message.author)
+            try:
+                userWeaponForm = pandas.read_json('./users/' + user + '_weaponForm.json', orient = 'index')
+                userItemForm = pandas.read_json('./users/' + user + '_itemForm.json', orient = 'index')
+            except Exception:
+                await message.reply('获取失败，请先注册', mention_author = message.author)
+            #判断是否为空
+            if userWeaponForm.empty == True and userItemForm.empty == True:
+                await message.reply('你还没有获得过任何武器或物品', mention_author = message.author)
+            else:
+                res = ''
+                if userWeaponForm.empty != True:
+                    res += otherModule.convertToOutputForm(f_pandasForm = userWeaponForm, f_formType = 'weapon')
+                else:
+                    res += '你还没有获得任何武器\n'
 
-            if weaponDic == 'Error' or itemDic == 'Error':
-                message.reply('未找到用户，请先注册', mention_author=message.author)
-                return
+                res += '\n'
 
-            msg='\n武器名 | 攻击力 | 稀有度\n'
-            
-            for key in weaponDic:
-                weaponInfo = weaponDic[key]
-                msg += weaponInfo[0] + ' | ' + weaponInfo[1] + ' | ' +  weaponInfo[3] + '\n'
-            msg += '\n物品名 | 数量 | 稀有度\n'
-
-            for key in itemDic:
-                itemInfo = itemDic[key]
-                msg += itemInfo[0] + ' | ' + itemInfo[1] + ' | ' + itemInfo[3] + '\n'
-
-            await message.reply(msg, mention_author = message.author)
-
+                if userItemForm.empty != True:
+                    res += otherModule.convertToOutputForm(f_pandasForm = userItemForm, f_formType = 'item')
+                else:
+                    res += '你还没有获得任何物品'
+            await message.reply(res, mention_author = message.author)
 
         """
         签到模块
@@ -108,27 +120,27 @@ class MyClient(qq.Client):
 
 
         if '/签到' in message.content:
-            #检测签到间隔时间
-            currentTime = int(time.time() // 86400)
-            infoList = readModule.readUserBasicInfo(str(message.author))
-
-            if(infoList == 'Error'):
+            #检测是否注册
+            try:
+                userBasicInfo = pandas.read_json('./users/' + str(message.author) + '_basicInfo.json', typ = 'series')
+            except Exception:
                 await message.reply('签到失败，请先注册', mention_author = message.author)
                 return
-
-            if(currentTime - infoList['lastActivity'] < 1 and infoList['signedDays'] != 0):
+            #检测签到间隔时间
+            currentTime = int(time.time() // 86400)
+            if(currentTime - userBasicInfo['lastActivity'] < 1 and userBasicInfo['signedDays'] != 0):
                 await message.reply('签到失败，请不要在一天之内多次签到', mention_author = message.author)
             else:
                 #检测连续签到天数
-                if currentTime - infoList['lastActivity'] == 1:
-                    continuousSigned = infoList['continuousSigned'] + 1
-                    skyDustAmount = infoList['skyDustAmount'] + ((continuousSigned - 3) % 30 * 5)
+                if currentTime - userBasicInfo['lastActivity'] == 1:
+                    continuousSigned = userBasicInfo['continuousSigned'] + 1
+                    skyDustAmount = userBasicInfo['skyDustAmount'] + ((continuousSigned - 3) % 30 * 5)
                 else:
                     #重置连续签到
                     continuousSigned = 1
-                signedDays = infoList['signedDays'] + 1
-                skyDustAmount = infoList['skyDustAmount'] + 10
-                refreshModule.refreshBasicInfo(str(message.author), skyDustAmount, signedDays, currentTime, infoList['earthDustAmount'], continuousSigned)
+                signedDays = userBasicInfo['signedDays'] + 1
+                skyDustAmount = userBasicInfo['skyDustAmount'] + 10
+                refreshModule.refreshBasicInfo(f_user = str(message.author), f_skyDustAmount = skyDustAmount, f_signedDays = signedDays, f_lastActivity = currentTime, f_continuousSigned = continuousSigned) 
 
                 if continuousSigned > 3:
                     await message.reply('你目前有' + str(skyDustAmount) + '个天空之尘，已累计签到' + str(signedDays) + '天，已连续签到' + str(continuousSigned) + '天，额外获得' + skyDustAmount - 10 + '个天空之尘', mention_author = message.author)
@@ -142,9 +154,9 @@ class MyClient(qq.Client):
 
 
         if '/活动' in message.content:
-            activityInfo = readModule.readActivityInfo()
-            activityWeapon = readModule.readActivityWeapon()
-            activityItem = readModule.readActivityItem()
+            activityInfo = pandas.read_json('./activities/activityInfo.json', typ = 'series')
+            activityWeaponForm = pandas.read_json('./activities/activityItemForm.json', orient = 'index')
+            activityItemForm = pandas.read_json('./activities/activityItemForm.json', orient = 'index')
             await message.reply('\n当前活动：' + activityInfo['activityName'] + '\n该活动会在' + str(int(activityInfo['daysRemain']) - int(time.time() // 86400)) + '天后结束\n\n武器 | 攻击力 | 稀有度\n' + activityWeapon['weaponNameString'] + '\n物品 | 数量 | 稀有度\n' + activityItem['itemNameString'], mention_author = message.author)
                
             

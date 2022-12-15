@@ -1,11 +1,22 @@
-﻿#coding = utf-8
-import readModule
+#coding = utf-8
+import pandas
 
-def refreshBasicInfo(user, skyDustAmount, signedDays, lastActivity, earthDustAmount, continuousSigned):
-    #重新写入信息
-    userInfoFile = open('./users/' + user +'_basicInfo.csv', mode = 'w', encoding = 'utf8')
-    userInfoFile.write(str(skyDustAmount) + ',' + str(signedDays) + ',' + str(lastActivity) + ',' + str(earthDustAmount) + ',' + str(continuousSigned))
-    userInfoFile.close()
+import modules.readModule as readModule
+
+def refreshBasicInfo(f_user, f_skyDustAmount = -1, f_signedDays = -1, f_lastActivity = -1, f_earthDustAmount = -1, f_continuousSigned = -1):
+    userBasicInfo = pandas.read_json('./users/' + f_user + '_basicInfo.json', typ = 'series')
+    print(f_skyDustAmount, end = '\n\n\n\n\n')
+    if f_skyDustAmount != -1:
+        userBasicInfo['skyDustAmount'] = f_skyDustAmount
+    if f_signedDays != -1:
+        userBasicInfo['signedDays'] = f_signedDays
+    if f_lastActivity != -1:
+        userBasicInfo['lastActivity'] = f_lastActivity
+    if f_earthDustAmount != -1:
+        userBasicInfo['earthDustAmount'] = f_earthDustAmount
+    if f_continuousSigned != -1:
+        userBasicInfo['continuousSigned'] = f_continuousSigned
+    userBasicInfo.to_json('./users/' + f_user + '_basicInfo.json', indent = 4)
     
 
 def refreshInGameInfo(user, currentLevel, basicHP, basicAttack, totalExp):
