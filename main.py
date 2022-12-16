@@ -23,14 +23,16 @@ class MyClient(qq.Client):
             return
 
         if str(message.author) != '443eb9#C':
-            await message.reply('机器人正在进行大型维护，请耐心等待', mention_author = message.author)
+            await message.reply('机器人正在进行维护，请耐心等待', mention_author = message.author)
+            return
 
 
         """
         做作业模块
         """
         if '/作业' in message.content:
-            await message.reply('当前没有作业', mention_author = message.author)
+            df = pandas.read_excel('./homework/homework.xlsx')
+            df.to_json('./homework/hw.json', indent = 4, orient = 'index')
 
 
         """
@@ -38,7 +40,7 @@ class MyClient(qq.Client):
         """
 
         if '/菜单' in message.content:
-            menuFile = open('./assets/menu.txt', mode = 'r', encoding = 'utf8')
+            menuFile = open('./texts/menu.txt', mode = 'r', encoding = 'utf8')
             menu = menuFile.read()
             menuFile.close()
             await message.reply(menu, mention_author=message.author)
@@ -63,10 +65,10 @@ class MyClient(qq.Client):
             userBasicInfo = pandas.Series(index = ['skyDustAmount', 'signedDays', 'lastActivity', 'earthDustAmount', 'continuousSigned'], data = [0, 0, 0, 0, 0])
             userBasicInfo.to_json('./users/' + user + '_basicInfo.json', indent = 4)
 
-            userBasicInfo = pandas.DataFrame(columns = ['weaponName', 'weaponAttack', 'weaponRarity', 'weaponRarityRaw'])
+            userBasicInfo = pandas.DataFrame({'weaponName': ['新手剑'], 'weaponAttack': [10], 'weaponRarity': ['Special'], 'weaponRarityRaw': [-1]})
             userBasicInfo.to_json('./users/' + user + '_weaponForm.json', indent = 4, orient = 'index')
 
-            userBasicInfo = pandas.DataFrame(columns = ['itemName', 'itemAmount', 'itemRarity', 'itemRarityRaw'])
+            userBasicInfo = pandas.DataFrame({'itemName': ['生命药水'], 'itemAmount': [1], 'itemRarity': ['Common'], 'itemRarityRaw': [5]})
             userBasicInfo.to_json('./users/' + user + '_itemForm.json', indent = 4, orient = 'index')
 
             userBasicInfo = pandas.Series(index = ['currentLevel', 'basicHP', 'basicAttack', 'totalExp'], data = [0, 2000, 50, 0])
@@ -91,16 +93,17 @@ class MyClient(qq.Client):
 
         if '/个人物品' in message.content:
             user = str(message.author)
+            res = ''
             try:
                 userWeaponForm = pandas.read_json('./users/' + user + '_weaponForm.json', orient = 'index')
                 userItemForm = pandas.read_json('./users/' + user + '_itemForm.json', orient = 'index')
             except Exception:
                 await message.reply('获取失败，请先注册', mention_author = message.author)
+                return
             #判断是否为空
             if userWeaponForm.empty == True and userItemForm.empty == True:
                 await message.reply('你还没有获得过任何武器或物品', mention_author = message.author)
             else:
-                res = ''
                 if userWeaponForm.empty != True:
                     res += otherModule.convertToOutputForm(f_pandasForm = userWeaponForm, f_formType = 'weapon')
                 else:
@@ -112,7 +115,7 @@ class MyClient(qq.Client):
                     res += otherModule.convertToOutputForm(f_pandasForm = userItemForm, f_formType = 'item')
                 else:
                     res += '你还没有获得任何物品'
-            await message.reply(res, mention_author = message.author)
+                await message.reply(res, mention_author = message.author)
 
         """
         签到模块
@@ -155,9 +158,10 @@ class MyClient(qq.Client):
 
         if '/活动' in message.content:
             activityInfo = pandas.read_json('./activities/activityInfo.json', typ = 'series')
-            activityWeaponForm = pandas.read_json('./activities/activityItemForm.json', orient = 'index')
-            activityItemForm = pandas.read_json('./activities/activityItemForm.json', orient = 'index')
-            await message.reply('\n当前活动：' + activityInfo['activityName'] + '\n该活动会在' + str(int(activityInfo['daysRemain']) - int(time.time() // 86400)) + '天后结束\n\n武器 | 攻击力 | 稀有度\n' + activityWeapon['weaponNameString'] + '\n物品 | 数量 | 稀有度\n' + activityItem['itemNameString'], mention_author = message.author)
+            activityWeaponForm = otherModule.convertToOutputForm(f_pandasForm = pandas.read_json('./activities/activityItemForm.json', orient = 'index'), f_formType = 'weapon')
+            activityItemForm = otherModule.convertToOutputForm(f_pandasForm = pandas.read_json('./activities/activityItemForm.json', orient = 'index'), f_formType = 'item')
+            daysRemain = int(activityInfo['endDay'] - int(time.time() // 86400))
+            await message.reply('\n当前活动：' + activityInfo['activityName'] + '\n该活动会在' + daysRemain + '天后结束\n\n' + activityWeaponForm + '\n\n' + activityItemForm, mention_author = message.author)
                
             
         """
@@ -166,60 +170,37 @@ class MyClient(qq.Client):
 
 
         if '/单抽' in message.content:
-            userInfoDic = readModule.readUserBasicInfo(str(message.author))
-
-            if userInfoDic == 'Error':
-                message.reply('抽卡失败，请先注册', mention_author = message.author)
-                return
-
-            #天空之尘数量检测
-            if userInfoDic['skyDustAmount'] < 50:
-                await message.reply('抽卡失败，你目前的天空之尘不足50')
-                return
-
-            #开始抽卡
-            skyDust = int(userInfoDic['skyDustAmount']) - 50
-            earthDust = int(userInfoDic['earthDustAmount'])
-            await message.reply('咻~')
-            elemNameAndType = otherModule.gacha()
-
-            #读取相关列表
-            elemName = elemNameAndType[0]
-            elemType = elemNameAndType[1]
-
-            #获取元素的类型以及信息
-            if elemType == 'weapon':
-                #读取活动所有的武器
-                weaponDic = readModule.readActivityWeapon()
-                #找到抽到的武器的信息列表
-                weaponInfoList = weaponDic[elemName]
+            user = str(message.author)
+            userBasicInfo = pandas.read_json('./users/' + user + '_basicInfo.json', typ = 'series')
+            userBasicInfo['skyDustAmount'] -= 100
+            result = otherModule.gacha()
+            #判断抽到的东西的类型
+            #武器
+            if 'weaponName' in result.index:
+                #判断是否重复
+                userWeaponForm = pandas.read_json('./users/' + user + '_weaponForm.json', orient = 'index')
+                if result['weaponName'] in userWeaponForm['weaponName']:
+                    await message.reply('重复获得' + result['weaponName'] + '，已转化为25大地之烬', mention_author = message.author)
+                    userBasicInfo['earthDustAmount'] += 25
+                else:
+                    await message.reply('获得了' + result['weaponName'], mention_author = message.author)
+                    pandas.concat(objs = [userWeaponForm, result], ignore_index = True).to_json('./users/' + user + '_weaponForm.json', indent = 4, orient = 'index')
+            #物品
             else:
-                itemDic = readModule.readActivityItem()
-                itemInfoList = itemDic[elemName]
-
-            #输出
-            if elemType == 'weapon':
-                userWeaponDic = readModule.readUserWeaponList(str(message.author))
-                #判断武器是否重复
-                if elemName in userWeaponDic:
-                    await message.reply('重复获得' + elemName + '，转化为20个大地之烬', mention_author = message.author)
-                    earthDust += 20
+                #判断是否是天空之尘
+                if '天空之尘' in result['itemName']:
+                    await message.reply('获得了' + str(result['itemAmount']) + '个天空之尘', mention_author = message.author)
+                    userBasicInfo['skyDustAmount'] += result['itemAmount']
                 else:
-                    await message.reply('恭喜你获得了：' + elemName, mention_author = message.author)
-                    #保存武器
-                    refreshModule.refreshWeaponList(str(message.author), weaponInfoList)
-            elif elemType == 'item':
-                #检测是否为天空之尘
-                if elemName[:4] == '天空之尘':
-                    skyDustAmount += int(elemName[4:len(elemName)])
-                    await message.reply('恭喜你获得了' + itemInfoList[1] + '个天空之尘', mention_author = message.author)
-                else:
-                    await message.reply('恭喜你获得了' + itemInfoList[1] + '个' + elemName, mention_author = message.author)
-                    #保存物品
-                    refreshModule.refreshItemList(str(message.author), itemInfoList)
-
+                    userItemForm = pandas.read_json('./users/' + user + '_basicInfo.json', orient = 'index')
+                    await message.reply('获得了' + str(result['itemAmount']) + '个' + result['itemName'], mention_author = message.author)
+                    #判断是否重复
+                    if result['itemName'] in userItemForm['itemName']:
+                        userItemForm.at[result['itemName'], 'itemAmount'] += result['itemAmount']
+                    else:
+                        pandas.concat(objs = [userItemForm, result], ignore_index = True).to_json('./users/' + user + '_itemForm.json', indent = 4, orient = 'index')
             #保存基础数据
-            refreshModule.refreshBasicInfo(str(message.author), skyDust, userInfoDic['signedDays'], userInfoDic['lastActivity'], earthDust, userInfoDic['continuousSigned'])
+            userBasicInfo.to_json('./users/' + user + '_basicInfo.json', indent = 4)
 
 
         """
@@ -228,61 +209,56 @@ class MyClient(qq.Client):
 
 
         if '/十连抽' in message.content:
-            userInfoDic = readModule.readUserBasicInfo(str(message.author))
-
-            if userInfoDic == 'Error':
-                message.reply('抽卡失败，请先注册', mention_author = message.author)
-                return
-
-            #天空之尘数量检测
-            if int(userInfoDic['skyDustAmount']) < 500:
-                await message.reply('抽卡失败，你目前的天空之尘不足500')
-                return
-
-            #开始抽卡
-            skyDustAmount = userInfoDic['skyDustAmount'] - 500
-            earthDustAmount = userInfoDic['earthDustAmount']
-            await message.reply('咻咻咻咻咻咻咻咻咻咻~')
-            for i in range(10):
-                elemNameAndType = otherModule.gacha()
-
-                #读取相关列表
-                elemName = elemNameAndType[0]
-                elemType = elemNameAndType[1]
-
-                #获取元素的类型以及信息
-                if elemType == 'weapon':
-                    #读取活动所有的武器
-                    weaponDic = readModule.readActivityWeapon()
-                    #找到抽到的武器的信息列表
-                    weaponInfoList = weaponDic[elemName]
+            user = str(message.author)
+            userBasicInfo = pandas.read_json('./users/' + user + '_basicInfo.json', typ = 'series')
+            outputWeaponForm = pandas.DataFrame(columns = ['weaponName', 'weaponAttack', 'weaponRarity', 'weaponRarityRaw'])
+            outputItemForm = pandas.DataFrame(columns = ['itemName', 'itemAmount', 'itemRarity', 'itemRarityRaw'])
+            outputEarthDustAmount = 0
+            outputSkyDustAmount = 0
+            finalOutputForm = ''
+            for i in range(10): 
+                result = otherModule.gacha()
+                #判断抽到的东西的类型
+                #武器
+                if 'weaponName' in result.index:
+                    #判断是否重复
+                    userWeaponForm = pandas.read_json('./users/' + user + '_weaponForm.json', orient = 'index')
+                    if result['weaponName'] in userWeaponForm['weaponName']:
+                        result['weaponName'] += '（重复）'
+                        pandas.concat(onjs = [outputWeaponForm, result], ignore_index = True)
+                        userBasicInfo['earthDustAmount'] += 25
+                        outputEarthDustAmount += 25
+                    else:
+                        pandas.concat(objs = [outputWeaponForm, result], ignore_index = True)
+                        userWeaponForm = pandas.concat(objs = [userWeaponForm, result], ignore_index = True)
+                #物品
                 else:
-                    itemDic = readModule.readActivityItem()
-                    itemInfoList = itemDic[elemName]
-
-                #输出
-                if elemType == 'weapon':
-                    userWeaponDic = readModule.readUserWeaponList(str(message.author))
-                    #判断武器是否重复
-                    if elemName in userWeaponDic:
-                        await message.reply('重复获得' + elemName + '，转化为20个大地之烬', mention_author = message.author)
-                        earthDustAmount += 20
+                    #判断是否是天空之尘
+                    if '天空之尘' in result['itemName']:
+                        outputSkyDustAmount += result['itemAmount']
+                        userBasicInfo['skyDustAmount'] += result['itemAmount']
                     else:
-                        await message.reply('恭喜你获得了：' + elemName, mention_author = message.author)
-                        #保存武器
-                        refreshModule.refreshWeaponList(str(message.author), weaponInfoList)
-                elif elemType == 'item':
-                    #检测是否为天空之尘
-                    if elemName[:4] == '天空之尘':
-                        skyDustAmount += int(elemName[4:len(elemName)])
-                        await message.reply('恭喜你获得了' + itemInfoList[1] + '个天空之尘', mention_author = message.author)
-                    else:
-                        await message.reply('恭喜你获得了' + itemInfoList[1] + '个' + elemName, mention_author = message.author)
-                        #保存物品
-                        refreshModule.refreshItemList(str(message.author), itemInfoList)
-
-                #保存基础数据
-                refreshModule.refreshBasicInfo(str(message.author), skyDustAmount, userInfoDic['signedDays'], userInfoDic['lastActivity'], earthDustAmount, userInfoDic['continuousSigned'])
+                        userItemForm = pandas.read_json('./users/' + user + '_basicInfo.json', orient = 'index')
+                        #判断是否重复
+                        if result['itemName'] in userItemForm['itemName']:
+                            userItemForm.at[result['itemName'], 'itemAmount'] += result['itemAmount']
+                        else:
+                            userItemForm = pandas.concat(objs = [userItemForm, result], ignore_index = True)
+                        #判断输出列表是否重复
+                        if result['itemName'] in outputItemForm['itemName']:
+                            outputItemForm.at[result['itemName'], 'itemAmount'] += result['itemAmount']
+                        else:
+                            pandas.concat(objs = [outputItemForm, result], ignore_index = True)
+            #保存数据
+            userBasicInfo.to_json('./users/' + user + '_basicInfo.json', indent = 4)
+            userWeaponForm.to_json('./users/' + user + '_weaponForm.json', indent = 4, orient = 'index')
+            userItemForm.to_json('./users/' + user + '_itemForm.json', indent = 4, orient = 'index')
+            #处理表格数据
+            finalOutputForm += otherModule.convertToOutputForm(f_pandasForm = outputWeaponForm, f_formType = 'weapon')
+            finalOutputForm += '\n\n'
+            finalOutputForm += otherModule.convertToOutputForm(f_pandasForm = outputItemForm, f_formType = 'item')
+            finalOutputForm += '总计获得' + outputSkyDustAmount + '个天空之尘及' + outputEarthDustAmount + '个大地之烬'
+            await message.reply(finalOutputForm, mention_author = message.author)
 
 
         """
@@ -345,37 +321,35 @@ class MyClient(qq.Client):
 
                     #修改指定用户的天空之尘
                     if commandList[1] == 'modifySkyDustAmount':
-                        userInfoDic = readModule.readUserBasicInfo(str(commandList[2]))
-                        res = refreshModule.refreshBasicInfo(str(commandList[2]), int(commandList[3]), userInfoDic['signedDays'], userInfoDic['lastActivity'], userInfoDic['earthDustAmount'],userInfoDic['continuousSigned'])
-                        if res == 'Error':
-                            await message.reply('Unknow user: ' + str(commandList[2]))
-                        else:
-                            await message.reply('Successfully modified ' + str(commandList[2]) + '\'s sky dust amount.')
-                        return
+                        try:
+                            userBasicInfo = pandas.read_json('./users/' + user + '_basicInfo.json', typ = 'series')
+                        except Exception:
+                            await message.reply('Unknow user: ' + commandList[2])
+                            return
+                        userBasicInfo['skyDustAmount'] = int(commandList[3])
+                        userBasicInfo.to_json('./users/' + user + '_basicInfo.json', indent = 4, orient = 'index')
+                        await message.reply('Successfully modified ' + str(commandList[2]) + '\'s sky dust amount.')
 
                     #展示指定用户个人信息
-                    if commandList[1] == 'showBasicInfoRaw':
-                        userInfoDic = readModule.readUserBasicInfo(str(commandList[2]))
+                    if commandList[1] == 'showBasicInfoFull':
                         try:
-                            user = str(commandList[2])
-                            skyDustAmount = userInfoDic['skyDustAmount']
-                            signedDays = userInfoDic['signedDays']
-                            lastActivity = userInfoDic['lastActivity']
-                            earthDustAmount = userInfoDic['earthDustAmount']
-                        except IndexError:
+                            userBasicInfo = pandas.read_json('./users/' + user + '_basicInfo.json', typ = 'series')
+                        except Exception:
                             await message.reply('Unknow user: ' + str(commandList[2]))
                             return
-                        await message.reply(user + ' ' + skyDustAmount + ' ' + signedDays + ' ' + lastActivity + ' ' + earthDustAmount)
+                        await message.reply(userBasicInfo)
                         return
 
                     #显示帮助
                     elif commandList[1] == 'help':
-                        await message.reply('\ncurrentTimeStamp：返回当前时间戳对应的天数\modifySkyDustAmount||[str:userName]||[int:skyDustCount]：修改指定用户的天空之尘数', mention_author = message.author)
+                        helpFile = open('./texts/commandHelp.txt', mode = 'r' ,encoding = 'utf8')
+                        help = helpFile.read()
+                        await message.reply(help, mention_author = message.author)
 
                     #无效命令判断
                     else:
                         await message.reply('Unknow command. Retype the command or type \"help\" to get help', mention_author = message.author)
-                except IndexError:
+                except Exception:
                     await message.reply('Unknow command. Retype the command or type \"help\" to get help', mention_author = message.author)
             else:
                 await message.reply('Authentication Failed')

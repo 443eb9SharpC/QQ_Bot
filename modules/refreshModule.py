@@ -5,7 +5,6 @@ import modules.readModule as readModule
 
 def refreshBasicInfo(f_user, f_skyDustAmount = -1, f_signedDays = -1, f_lastActivity = -1, f_earthDustAmount = -1, f_continuousSigned = -1):
     userBasicInfo = pandas.read_json('./users/' + f_user + '_basicInfo.json', typ = 'series')
-    print(f_skyDustAmount, end = '\n\n\n\n\n')
     if f_skyDustAmount != -1:
         userBasicInfo['skyDustAmount'] = f_skyDustAmount
     if f_signedDays != -1:
