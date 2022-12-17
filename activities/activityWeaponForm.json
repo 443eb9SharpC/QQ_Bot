@@ -3,30 +3,30 @@
         "weaponName":"\u4f5c\u4e1a",
         "weaponAttack":400,
         "weaponRarity":"Legendary",
-        "weaponRarityRaw":5
+        "weaponRarityRaw":0.05
     },
     "1":{
         "weaponName":"\u5f88\u539a\u7684\u4f5c\u4e1a",
         "weaponAttack":750,
         "weaponRarity":"Legendary",
-        "weaponRarityRaw":5
+        "weaponRarityRaw":0.05
     },
     "2":{
         "weaponName":"\u7b14",
         "weaponAttack":100,
         "weaponRarity":"Epic",
-        "weaponRarityRaw":55
+        "weaponRarityRaw":0.2
     },
     "3":{
         "weaponName":"\u6a61\u76ae",
         "weaponAttack":75,
         "weaponRarity":"Rare",
-        "weaponRarityRaw":85
+        "weaponRarityRaw":0.3
     },
     "4":{
         "weaponName":"\u5c3a\u5b50",
         "weaponAttack":50,
         "weaponRarity":"Common",
-        "weaponRarityRaw":95
+        "weaponRarityRaw":0.4
     }
 }

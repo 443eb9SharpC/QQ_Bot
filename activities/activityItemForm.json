@@ -3,24 +3,24 @@
         "itemName":"天空之尘",
         "itemAmount":100,
         "itemRarity":"Lengendary",
-        "itemRarityRaw":5
+        "itemRarityRaw":0.1
     },
     "1":{
         "itemName":"天空之尘",
         "itemAmount":50,
         "itemRarity":"Epic",
-        "itemRarityRaw":55
+        "itemRarityRaw":0.2
     },
     "2":{
         "itemName":"天空之尘",
         "itemAmount":25,
         "itemRarity":"Rare",
-        "itemRarityRaw":85
+        "itemRarityRaw":0.3
     },
     "3":{
         "itemName":"天空之尘",
         "itemAmount":10,
         "itemRarity":"Common",
-        "itemRarityRaw":95
+        "itemRarityRaw":0.4
     }
 }
