@@ -1,26 +1,47 @@
 {
-    "0":{
-        "itemName":"天空之尘",
-        "itemAmount":100,
-        "itemRarity":"Lengendary",
-        "itemRarityRaw":0.1
+    "旺旺大礼包":{
+        "itemAmount":1,
+        "itemRarity":"Legendary",
+        "itemRarityRaw":0.025
     },
-    "1":{
-        "itemName":"天空之尘",
-        "itemAmount":50,
+    "天空之尘500":{
+        "itemAmount":500,
+        "itemRarity":"Legendary",
+        "itemRarityRaw":0.025
+    },
+    "净化之歌":{
+        "itemAmount":1,
         "itemRarity":"Epic",
-        "itemRarityRaw":0.2
+        "itemRarityRaw":0.075
     },
-    "2":{
-        "itemName":"天空之尘",
-        "itemAmount":25,
+    "天空之尘200":{
+        "itemAmount":200,
+        "itemRarity":"Epic",
+        "itemRarityRaw":0.075
+    },
+    "天空之尘50":{
+        "itemAmount":50,
         "itemRarity":"Rare",
-        "itemRarityRaw":0.3
+        "itemRarityRaw":0.15
     },
-    "3":{
-        "itemName":"天空之尘",
-        "itemAmount":10,
+    "恢复药水":{
+        "itemAmount":1,
+        "itemRarity":"Rare",
+        "itemRarityRaw":0.15
+    },
+    "力量药水":{
+        "itemAmount":1,
         "itemRarity":"Common",
-        "itemRarityRaw":0.4
+        "itemRarityRaw":0.1667
+    },
+    "生命药水":{
+        "itemAmount":1,
+        "itemRarity":"Common",
+        "itemRarityRaw":0.1667
+    },
+    "天空之尘":{
+        "itemAmount":20,
+        "itemRarity":"Common",
+        "itemRarityRaw":0.1667
     }
 }

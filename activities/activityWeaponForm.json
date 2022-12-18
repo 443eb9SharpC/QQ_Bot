@@ -1,32 +1,42 @@
 {
-    "0":{
-        "weaponName":"\u4f5c\u4e1a",
-        "weaponAttack":400,
+    "月影":{
+        "weaponAttack":1250,
         "weaponRarity":"Legendary",
         "weaponRarityRaw":0.05
     },
-    "1":{
-        "weaponName":"\u5f88\u539a\u7684\u4f5c\u4e1a",
-        "weaponAttack":750,
-        "weaponRarity":"Legendary",
-        "weaponRarityRaw":0.05
-    },
-    "2":{
-        "weaponName":"\u7b14",
-        "weaponAttack":100,
+    "灯火":{
+        "weaponAttack":500,
         "weaponRarity":"Epic",
-        "weaponRarityRaw":0.2
+        "weaponRarityRaw":0.075
     },
-    "3":{
-        "weaponName":"\u6a61\u76ae",
-        "weaponAttack":75,
+    "流光":{
+        "weaponAttack":600,
+        "weaponRarity":"Epic",
+        "weaponRarityRaw":0.075
+    },
+    "朱缨枪":{
+        "weaponAttack":250,
         "weaponRarity":"Rare",
-        "weaponRarityRaw":0.3
+        "weaponRarityRaw":0.15
     },
-    "4":{
-        "weaponName":"\u5c3a\u5b50",
-        "weaponAttack":50,
+    "白铁剑":{
+        "weaponAttack":200,
+        "weaponRarity":"Rare",
+        "weaponRarityRaw":0.15
+    },
+    "外表普通的剑":{
+        "weaponAttack":75,
         "weaponRarity":"Common",
-        "weaponRarityRaw":0.4
+        "weaponRarityRaw":0.1667
+    },
+    "大剑":{
+        "weaponAttack":100,
+        "weaponRarity":"Common",
+        "weaponRarityRaw":0.1667
+    },
+    "不寻常的剑":{
+        "weaponAttack":150,
+        "weaponRarity":"Common",
+        "weaponRarityRaw":0.1667
     }
 }

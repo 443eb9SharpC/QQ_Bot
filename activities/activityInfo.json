@@ -1,6 +1,9 @@
 {
-    "activityName":"快乐周末",
-    "endYear":2022,
-    "endMonth":12,
-    "endDay":20
+    "activityName":"辞旧迎新",
+    "startYear":2022,
+    "startMonth":12,
+    "startDay":19,
+    "endYear":2023,
+    "endMonth":1,
+    "endDay":2
 }
