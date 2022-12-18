@@ -50,8 +50,9 @@ def convertToOutputForm(f_pandasForm: pandas.DataFrame, f_formType):
     return result
 
 
-def updateUserLevel(f_user):
+def updateUserInGameInfo(f_user):
     userInGameInfo = pandas.read_json('./users/' + f_user + '_inGameInfo.json', typ = 'series')
+    #更新等级
     while True:
         if userInGameInfo['currentLevel'] == 100:
             return
@@ -67,8 +68,14 @@ def updateUserLevel(f_user):
             expNeeded = 4096 #2 ** 12
         else:
             expNeeded = 512 #2 ** 9
+
         if userInGameInfo['currentExp'] > expNeeded:
             userInGameInfo['currentLevel'] += 1
+            userInGameInfo['currentExp'] -= expNeeded
         else:
             break
+    #更新基础生命值
+    userInGameInfo['basicHP'] = userInGameInfo['currentLevel'] * 50 + 2000
+    #更新基础攻击力
+    userInGameInfo['basicAttack'] = userInGameInfo['currentLevel'] * 5 + 50
     userInGameInfo.to_json('./users/' + f_user + '_inGameInfo.json', indent = 4)

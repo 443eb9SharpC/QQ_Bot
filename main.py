@@ -1,7 +1,7 @@
 #coding = utf-8
 import asyncio
 import qq
-import time
+import datetime
 import pandas
 import random
 from config import appid, token
@@ -24,7 +24,7 @@ class MyClient(qq.Client):
             if message.author.id == self.user.id:
                 return
 
-            if message.channel.id != 13630884:
+            if message.channel.id != 13630884 and str(message.author) != '443eb9#C':
                 await message.reply('请不要使用开发模式下的命令', mention_author = message.author)
                 return
             if message.channel.id == 11672109:
@@ -36,7 +36,10 @@ class MyClient(qq.Client):
             测试用模块
             """
             if '##测试' in message.content:
-                await gameFightModule.test(message = message)
+                df = pandas.read_excel('./homework/homework.xlsx')
+                print(df)
+                df.set_index('水果名称')
+                print(df)
 
 
             """
@@ -75,10 +78,10 @@ class MyClient(qq.Client):
                 userBasicInfo = pandas.DataFrame({'itemName': ['生命药水'], 'itemAmount': [1], 'itemRarity': ['Common'], 'itemRarityRaw': [5]})
                 userBasicInfo.to_json('./users/' + user + '_itemForm.json', indent = 4, orient = 'index')
 
-                userBasicInfo = pandas.Series(index = ['currentLevel', 'basicHP', 'basicAttack', 'currentExp'], data = [0, 2000, 50, 0])
+                userBasicInfo = pandas.Series(index = ['currentLevel', 'basicHP', 'basicAttack', 'currentExp'], data = [0, 2000, 200, 0])
                 userBasicInfo.to_json('./users/' + user + '_inGameInfo.json', indent = 4)
 
-                await message.reply('注册成功', mention_author = message.author)
+                await message.reply('注册成功，如果你不知道如何使用这个机器人，你可以输入 /菜单', mention_author = message.author)
 
 
             """
@@ -132,8 +135,8 @@ class MyClient(qq.Client):
                     await message.reply('签到失败，请先注册', mention_author = message.author)
                     return
                 #检测签到间隔时间
-                currentTime = int(time.time() // 86400)
-                if (currentTime - userBasicInfo['lastActivity'] < 1 and userBasicInfo['signedDays'] != 0):
+                currentTime = datetime.date.today().day
+                if currentTime - userBasicInfo['lastActivity'] == 0:
                     await message.reply('签到失败，请不要在一天之内多次签到', mention_author = message.author)
                 else:
                     #检测连续签到天数
@@ -162,9 +165,10 @@ class MyClient(qq.Client):
 
             if '##活动' in message.content:
                 activityInfo = pandas.read_json('./activities/activityInfo.json', typ = 'series')
-                daysRemain = int(activityInfo['endDay'] - int(time.time() // 86400))
-                if daysRemain >= 0:
-                    message.reply('当前无正在进行的活动', mention_author = message.author)
+                endTime = datetime.date(activityInfo['endYear'], activityInfo['endMonth'], activityInfo['endDay'])
+                daysRemain = endTime.__sub__(datetime.date.today()).days
+                if daysRemain <= 0:
+                    await message.reply('当前无正在进行的活动', mention_author = message.author)
                     return
                 activityWeaponForm = otherModule.convertToOutputForm(f_pandasForm = pandas.read_json('./activities/activityWeaponForm.json', orient = 'index'), f_formType = 'weapon')
                 activityItemForm = otherModule.convertToOutputForm(f_pandasForm = pandas.read_json('./activities/activityItemForm.json', orient = 'index'), f_formType = 'item')
@@ -178,9 +182,10 @@ class MyClient(qq.Client):
 
             if '##单抽' in message.content:
                 activityInfo = pandas.read_json('./activities/activityInfo.json', typ = 'series')
-                daysRemain = int(activityInfo['endDay'] - int(time.time() // 86400))
-                if daysRemain == 0:
-                    message.reply('当前无正在进行的活动', mention_author = message.author)
+                endTime = datetime.date(activityInfo['endYear'], activityInfo['endMonth'], activityInfo['endDay'])
+                daysRemain = endTime.__sub__(datetime.date.today()).days
+                if daysRemain <= 0:
+                    await message.reply('当前无正在进行的活动', mention_author = message.author)
                     return
                 user = str(message.author)
                 try:
@@ -228,9 +233,10 @@ class MyClient(qq.Client):
 
             if '##十连抽' in message.content:
                 activityInfo = pandas.read_json('./activities/activityInfo.json', typ = 'series')
-                daysRemain = int(activityInfo['endDay'] - int(time.time() // 86400))
-                if daysRemain == 0:
-                    message.reply('当前无正在进行的活动', mention_author = message.author)
+                endTime = datetime.date(activityInfo['endYear'], activityInfo['endMonth'], activityInfo['endDay'])
+                daysRemain = endTime.__sub__(datetime.date.today()).days
+                if daysRemain <= 0:
+                    await message.reply('当前无正在进行的活动', mention_author = message.author)
                     return
                 user = str(message.author)
                 try:
@@ -292,6 +298,11 @@ class MyClient(qq.Client):
 
 
             """
+            商店模块
+            """
+
+
+            """
             对战模块
             """
 
@@ -308,14 +319,14 @@ class MyClient(qq.Client):
                 try:
                     checker = open('./users/' + user1 + '.isregistered', mode = 'r', encoding = 'utf8')
                 except:
-                    await message.reply(user1 + '未注册，请确保双方注册后再发起挑战', mention_author = message.author)
+                    await message.reply('未找到' + user1 + '，请在确保对方的名字正确且已经注册后再发起挑战', mention_author = message.author)
                     return
                 else:
                     checker.close()
                 try:
                     checker = open('./users/' + user2 + '.isregistered', mode = 'r', encoding = 'utf8')
                 except:
-                    await message.reply(user2 + '未注册，请确保双方注册后再发起挑战', mention_author = message.author)
+                    await message.reply('未找到' + user2 + '，请在确保对方的名字正确且已经注册后再发起挑战', mention_author = message.author)
                     return
                 else:
                     checker.close()
@@ -353,43 +364,44 @@ class MyClient(qq.Client):
                 loserBasicInfo = pandas.read_json('./users/' + loser + '_basicInfo.json', typ = 'series')
                 loserInGameInfo = pandas.read_json('./users/' + loser + '_inGameInfo.json', typ = 'series')
                 #根据等级差计算奖励
-                levelDifference = winner['currentLevel'] - loser['currentLevel']
+                levelDifference = winnerInGameInfo['currentLevel'] - loserInGameInfo['currentLevel']
                 if levelDifference >= 10:
                     if int(loserBasicInfo['skyDustAmount'] * 0.5) < 5000:
-                        winnerBasicInfo['skyDustAmount'] += 2000
-                        loserBasicInfo['skyDustAmount'] = 0
-                        winnerInGameInfo['currentExp'] += random.randint(32767, 65536)
+                        skyDustAmountMinused = loserBasicInfo['skyDustAmount']  + 10
                     else:
-                        winnerBasicInfo['skyDustAmount'] += int(loserBasicInfo['skyDustAmount'] * 0.5)
-                        loserBasicInfo['skyDustAmount'] = int(loserBasicInfo['skyDustAmount'] * 0.5)
+                        skyDustAmountMinused = int(loserBasicInfo['skyDustAmount'] * 0.5)
+                    currentExpAdded = random.randint(32767, 65536)
+                    skyDustAmountAdded = random.randint(2000, 4000)
                 elif levelDifference >= 5:
                     if int(loserBasicInfo['skyDustAmount'] * 0.3) < 1000:
-                        winnerBasicInfo['skyDustAmount'] += 1000
-                        loserBasicInfo['skyDustAmount'] = 0
-                        winnerInGameInfo['currentExp'] += random.randint(8192, 16384)
+                        skyDustAmountMinused = loserBasicInfo['skyDustAmount'] + 10
                     else:
-                        winnerBasicInfo['skyDustAmount'] += int(loserBasicInfo['skyDustAmount'] * 0.3)
-                        loserBasicInfo['skyDustAmount'] = int(loserBasicInfo['skyDustAmount'] * 0.3)
+                        skyDustAmountMinused = int(loserBasicInfo['skyDustAmount'] * 0.3)
+                    currentExpAdded = random.randint(8192, 16384)
+                    skyDustAmountAdded = random.randint(1000, 2000)
                 elif levelDifference >= 3:
                     if int(loserBasicInfo['skyDustAmount'] * 0.2) < 500:
-                        winnerBasicInfo['skyDustAmount'] += 500
-                        loserBasicInfo['skyDustAmount'] = 0
-                        winnerInGameInfo['currentExp'] += random.randint(4096, 8192)
+                        skyDustAmountMinused = loserBasicInfo['skyDustAmount'] + 10
                     else:
-                        winnerBasicInfo['skyDustAmount'] += int(loserBasicInfo['skyDustAmount'] * 0.2)
-                        loserBasicInfo['skyDustAmount'] = int(loserBasicInfo['skyDustAmount'] * 0.2)
+                        skyDustAmountMinused = int(loserBasicInfo['skyDustAmount'] * 0.2)
+                    currentExpAdded = random.randint(1024, 4096)
+                    skyDustAmountAdded = random.randint(500, 1000)
                 else:
                     if int(loserBasicInfo['skyDustAmount'] * 0.1) < 250:
-                        winnerBasicInfo['skyDustAmount'] += 250
-                        loserBasicInfo['skyDustAmount'] = 0
-                        winnerInGameInfo['currentExp'] += random.randint(2048, 4096)
+                        skyDustAmountMinused = loserBasicInfo['skyDustAmount'] + 10
                     else:
-                        winnerBasicInfo['skyDustAmount'] += int(loserBasicInfo['skyDustAmount'] * 0.1)
-                        loserBasicInfo['skyDustAmount'] = int(loserBasicInfo['skyDustAmount'] * 0.1)
+                        skyDustAmountMinused = int(loserBasicInfo['skyDustAmount'] * 0.1)
+                    currentExpAdded = random.randint(256, 1024)
+                    skyDustAmountAdded = random.randint(250, 500)
+                await message.reply('对战结束：\n' + winner + '获得：天空之尘 +' + str(skyDustAmountAdded) + '  经验值 +' + str(currentExpAdded) + '\n' + loser + '失去：天空之尘 -' + str(skyDustAmountMinused))
+                winnerBasicInfo['skyDustAmount'] += skyDustAmountAdded
+                winnerInGameInfo['currentExp'] += currentExpAdded
+                loserBasicInfo['skyDustAmount'] -= skyDustAmountMinused
                 winnerBasicInfo.to_json('./users/' + winner + '_basicInfo.json', indent = 4)
                 winnerInGameInfo.to_json('./users/' + winner + '_inGameInfo.json', indent = 4, orient = 'index')
                 loserBasicInfo.to_json('./users/' + loser + '_basicInfo.json', indent = 4)
                 loserInGameInfo.to_json('./users/' + loser + '_inGameInfo.json', indent = 4, orient = 'index')
+                otherModule.updateUserInGameInfo(f_user = winner)
 
 
             """
@@ -422,7 +434,7 @@ class MyClient(qq.Client):
                     case '十连抽':
                         await message.reply('消耗1000天空之尘一次性进行10次单抽', mention_author = message.author)
                     case '对战':
-                        await message.reply('使用方法：\n发起方：/对战||[对方的名字]\n接收方：[接受/拒绝]\n向某位用户发起挑战，使用你背包中的武器和物品想办法打败对方，胜利后会根据双方等级差距给出奖励和惩罚', mention_author = message.author)
+                        await message.reply(open('./texts/help/fight.txt', mode = 'r', encoding = 'utf8').read(), mention_author = message.author)
                     case '帮助':
                         await message.reply('使用方法：\n/帮助||[模块名称]\n显示各模块的详细说明', mention_author = message.author)
                     case _:
@@ -440,11 +452,6 @@ class MyClient(qq.Client):
                     command = message.content.split('||')
                     #判断命令
                     try:
-                        #展示当前时间戳对应的天数
-                        if command[1] == 'currentTimeStamp':
-                            await message.reply(int(time.time() / 86400), mention_author = message.author)
-                            return
-
                         #修改指定用户的天空之尘
                         if command[1] == 'modifySkyDustAmount':
                             try:
@@ -480,8 +487,8 @@ class MyClient(qq.Client):
                 else:
                     await message.reply('Authentication Failed')
         except:
-            await message.reply('\n发生异常:\n\n' + traceback.format_exc(), mention_author = message.author)
+            await message.reply('\n发生异常:\n' + traceback.format_exc(), mention_author = message.author)
 
 
 client = MyClient()
-client.run(token=f'{appid}.{token}')
+client.run(token = f'{appid}.{token}')
