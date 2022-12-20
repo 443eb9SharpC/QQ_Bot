@@ -1,7 +1,7 @@
 import qq
 
 async def help(message: qq.Message):
-    command = message.content.split('||')
+    command = message.content.split()
     try:
         moduleName = command[1]
     except:
@@ -26,6 +26,8 @@ async def help(message: qq.Message):
             await message.reply('消耗1000天空之尘一次性进行10次单抽', mention_author = message.author)
         case '对战':
             await message.reply(open('./texts/help/fight.txt', mode = 'r', encoding = 'utf8').read(), mention_author = message.author)
+        case '猜题':
+            await message.reply(open('./texts/help/guessing.txt', mode = 'r', encoding = 'utf8').read(), mention_author = message.author)
         case '帮助':
             await message.reply('使用方法：\n/帮助||[模块名称]\n显示各模块的详细说明', mention_author = message.author)
         case _:

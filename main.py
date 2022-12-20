@@ -1,6 +1,5 @@
 #coding = utf-8
 import qq
-import pandas
 from config import appid, token
 import logging
 import traceback
@@ -15,6 +14,7 @@ from functionalModules.gachaOnce import gachaOnce
 from functionalModules.gachaTenTimes import gachaTenTimes
 from functionalModules.shop import shop
 from functionalModules.fight import fight
+from functionalModules.guessing import guessing
 from functionalModules.help import help
 from functionalModules.devtool import devtool
 
@@ -52,7 +52,7 @@ class MyClient(qq.Client):
             if '##个人信息' in message.content:
                 await personalInfo(message)
 
-            if '##个人物品' in message.content:
+            if '##个人背包' in message.content:
                 await personalBackpack(message)
 
             if '##签到' in message.content:
@@ -71,7 +71,12 @@ class MyClient(qq.Client):
                 await shop(message)
 
             if '##对战' in message.content:
+                await message.reply('此功能正在开发中（Upgrading），请耐心等待', mention_author = message.author)
                 await fight(self, message)
+
+            if '##猜题' in message.content:
+                await message.reply('此功能正在开发中（Delayed），请耐心等待', mention_author = message.author)
+                await guessing(self, message)
 
             if '##帮助' in message.content:
                 await help(message)

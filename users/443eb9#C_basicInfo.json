@@ -1,7 +1,7 @@
 {
-    "skyDustAmount":20,
-    "signedDays":2,
-    "lastActivity":18,
+    "skyDustAmount":0,
+    "signedDays":0,
+    "lastActivity":0,
     "earthDustAmount":0,
-    "continuousSigned":2
+    "continuousSigned":0
 }

@@ -2,11 +2,11 @@
     "0":{
         "itemAmount":0,
         "itemRarity":0,
-        "itemRarityRaw":0.0
+        "itemRarityRaw":0
     },
     "\u751f\u547d\u836f\u6c34":{
         "itemAmount":1,
         "itemRarity":"Common",
-        "itemRarityRaw":0.4
+        "itemRarityRaw":5
     }
 }

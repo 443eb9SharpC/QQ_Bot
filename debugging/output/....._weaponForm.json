@@ -5,7 +5,7 @@
         "weaponRarityRaw":0
     },
     "\u65b0\u624b\u5251":{
-        "weaponAttack":20,
+        "weaponAttack":10,
         "weaponRarity":"Special",
         "weaponRarityRaw":-1
     }

@@ -29,6 +29,12 @@
         "weaponRarityRaw":0.05,
         "weaponPrice":1800
     },
+    "仪典花刃":{
+        "weaponAttack":700,
+        "weaponRarity":"Epic",
+        "weaponRarityRaw":0.15,
+        "weaponPrice":1000
+    },
     "影":{
         "weaponAttack":800,
         "weaponRarity":"Epic",
@@ -45,6 +51,6 @@
         "weaponAttack":100,
         "weaponRarity":"Common",
         "weaponRarityRaw":0.5,
-        "weaponPrice":50
+        "weaponPrice":100
     }
 }

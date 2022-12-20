@@ -19,20 +19,31 @@ def gacha():
 def convertToOutputForm(f_pandasForm: pandas.DataFrame, f_formType, f_priceIncluded = False):
     match f_formType:
         case 'weapon':
-            result = '\n武器名 | 攻击力 | 稀有度'
+            if f_priceIncluded == False:
+                result = '\n武器名 | 攻击力 | 稀有度'
+            else:
+                result = '\n武器名 | 攻击力 | 稀有度 | 价格'
             if f_pandasForm.empty == True:
                 result += '\n无武器'
             else:
                 for index, row in f_pandasForm.iterrows():
+                    #跳过占位符
+                    if row[0] == 0:
+                        continue
                     result += '\n' + index + ' | ' + str(row['weaponAttack']) + ' | ' + row['weaponRarity']
                     if f_priceIncluded == True:
                         result += ' | ' + str(row['weaponPrice'])
         case 'item':
-            result = '\n物品名 | 数量 |稀有度'
+            if f_priceIncluded == False:
+                result = '\n物品名 | 数量 | 稀有度'
+            else:
+                result = '\n物品名 | 数量 | 稀有度 | 价格'
             if f_pandasForm.empty == True:
                 result += '\n无物品'
             else:
                 for index, row in f_pandasForm.iterrows():
+                    if row[0] == 0:
+                        continue
                     result += '\n' + index + ' | ' + str(row['itemAmount']) + ' | ' + row['itemRarity']
                     if f_priceIncluded == True:
                         result += ' | ' + str(row['itemPrice'])
