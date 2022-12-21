@@ -4,19 +4,19 @@ from config import appid, token
 import logging
 import traceback
 
-from functionalModules.menu import menu
-from functionalModules.register import register
-from functionalModules.personalInfo import personalInfo
-from functionalModules.personalBackpack import personalBackpack
-from functionalModules.sign import sign
-from functionalModules.activity import activity
-from functionalModules.gachaOnce import gachaOnce
-from functionalModules.gachaTenTimes import gachaTenTimes
-from functionalModules.shop import shop
-from functionalModules.fight import fight
-from functionalModules.guessing import guessing
-from functionalModules.help import help
-from functionalModules.devtool import devtool
+from FunctionalModules.menu import menu
+from FunctionalModules.register import register
+from FunctionalModules.personal_info import personalInfo
+from FunctionalModules.personal_backpack import personalBackpack
+from FunctionalModules.sign import sign
+from FunctionalModules.activity import activity
+from FunctionalModules.gacha_once import gachaOnce
+from FunctionalModules.gacha_ten_times import gachaTenTimes
+from FunctionalModules.shop import shop
+#from FunctionalModules.fight import fight
+#from FunctionalModules.guessing import guessing
+from FunctionalModules.help import help
+from FunctionalModules.devtool import devtool
 
 logging.basicConfig(level = logging.DEBUG)
 
@@ -72,11 +72,11 @@ class MyClient(qq.Client):
 
             if '##对战' in message.content:
                 await message.reply('此功能正在开发中（Upgrading），请耐心等待', mention_author = message.author)
-                await fight(self, message)
+                #await fight(self, message)
 
             if '##猜题' in message.content:
                 await message.reply('此功能正在开发中（Delayed），请耐心等待', mention_author = message.author)
-                await guessing(self, message)
+                #await guessing(self, message)
 
             if '##帮助' in message.content:
                 await help(message)

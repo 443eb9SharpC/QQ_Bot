@@ -1,4 +1,0 @@
-
-modifySkyDustAmount||[str:user]||[int:skyDustAmount]：修改指定用户的天空之尘数
-showBasicInfoFull||[str:user]：展示指定用户个人信息
-help：显示帮助

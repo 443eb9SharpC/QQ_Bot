@@ -17,7 +17,7 @@ async def guessing(self: qq.Client, message: qq.Message):
         case 'MC':
             questionItem = pandas.read_json('./questions/questionItem/minecraft.json', typ = 'series').sample(n = 1)
             itemID = questionItem.index[0]
-            itemName = questionItem.values[0]
+            item_name = questionItem.values[0]
             questionDetail = pandas.read_json('./questions/questionDetail/' + itemID + '.json', typ = 'series')
         case '题库':
             await message.reply('当前题库：\nMC', mention_author = message.author)
@@ -25,23 +25,23 @@ async def guessing(self: qq.Client, message: qq.Message):
             await message.reply('没有你想找的题库，请检查你的题库名字，或输入 /猜题 题库 来查看可用的题库类型', mention_author = message.author)
     await message.reply('你选择了MC的题库', mention_author = message.author)
     #正式开始
-    detailShowed, answer: qq.Message = guessingGame(self = self, message = message, itemName = itemName, questionDetail = questionDetail)
+    detailShowed, answer: qq.Message = guessingGame(self = self, message = message, item_name = item_name, questionDetail = questionDetail)
     #判断是否是超时结束
     if detailShowed == 'timeout':
         await message.reply('超出5分钟没有人回答，游戏已结束', mention_author = message.author)
         return
     winner = str(answer.author)
-    userBasicInfo = pandas.read_json('./users/' + winner + '_basicInfo.json', typ = 'series')
+    user_basic_info = pandas.read_json('./users/' + winner + '_basic_info.json', typ = 'series')
     #奖励计算
     skyDustAwarded = 500 - detailShowed * 20
     if skyDustAwarded <= 100:
         skyDustAwarded = 100
     await answer.reply('恭喜你回答正确，获得' + skyDustAwarded + '天空之尘', mention_author = answer.author)
-    userBasicInfo['skyDustAmount'] += skyDustAwarded
-    userBasicInfo.to_json('./users/' + winner + '_basicInfo.json', indent = 4)
+    user_basic_info['sky_dust_amount'] += skyDustAwarded
+    user_basic_info.to_json('./users/' + winner + '_basic_info.json', indent = 4)
 
 
-async def guessingGame(self: qq.Client, message: qq.Message, itemName, questionDetail: pandas.DataFrame):
+async def guessingGame(self: qq.Client, message: qq.Message, item_name, questionDetail: pandas.DataFrame):
     detailShowed = 0
     while True:
         #抽取提示
@@ -56,7 +56,7 @@ async def guessingGame(self: qq.Client, message: qq.Message, itemName, questionD
                 return 'timeout', message
             answerItem = answer.content.split()[2]
             #检查回答是否正确
-            if answerItem == itemName:
+            if answerItem == item_name:
                 return detailShowed, answer
             else:
                 await message.reply('回答错误', mention_author = message.author)

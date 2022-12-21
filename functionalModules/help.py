@@ -3,11 +3,11 @@ import qq
 async def help(message: qq.Message):
     command = message.content.split()
     try:
-        moduleName = command[1]
+        module_name = command[2]
     except:
         await message.reply('请输入正确格式的命令：/帮助||[模块名称]', mention_author = message.author)
         return
-    match moduleName:
+    match module_name:
         case '菜单':
             await message.reply('展示菜单', mention_author = message.author)
         case '注册':
