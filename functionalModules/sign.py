@@ -2,10 +2,10 @@ import qq
 import pandas
 import datetime
 
-async def sign(message: qq.Message):
+async def Sign(message: qq.Message):
     #检测是否注册
     try:
-        user_basic_info = pandas.read_json('./users/' + str(message.author) + '_basic_info.json', typ = 'series')
+        user_basic_info = pandas.read_json('./Users/' + str(message.author) + '_basic_info.json', typ = 'series')
     except:
         await message.reply('签到失败，请先注册', mention_author = message.author)
         return
@@ -26,7 +26,7 @@ async def sign(message: qq.Message):
         user_basic_info['signed_days'] += 1
         user_basic_info['sky_dust_amount'] += 10
         user_basic_info['last_activity'] = current_time
-        user_basic_info.to_json('./users/' + str(message.author) + '_basic_info.json', indent = 4, orient = 'index')
+        user_basic_info.to_json('./Users/' + str(message.author) + '_basic_info.json', indent = 4, orient = 'index')
         if user_basic_info['continuous_signed'] > 3:
             await message.reply('你目前有' + str(user_basic_info['sky_dust_amount']) + '个天空之尘，已累计签到' + str(user_basic_info['signed_days']) + '天，已连续签到' + str(user_basic_info['continuous_signed']) + '天，额外获得' + str((user_basic_info['continuous_signed'] - 3) % 30 * 5) + '个天空之尘', mention_author = message.author)
         else:

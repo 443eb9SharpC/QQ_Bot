@@ -4,19 +4,19 @@ from config import appid, token
 import logging
 import traceback
 
-from FunctionalModules.menu import menu
-from FunctionalModules.register import register
-from FunctionalModules.personal_info import personalInfo
-from FunctionalModules.personal_backpack import personalBackpack
-from FunctionalModules.sign import sign
-from FunctionalModules.activity import activity
-from FunctionalModules.gacha_once import gachaOnce
-from FunctionalModules.gacha_ten_times import gachaTenTimes
-from FunctionalModules.shop import shop
+from FunctionalModules.menu import Menu
+from FunctionalModules.register import Register
+from FunctionalModules.personal_info import PersonalInfo
+from FunctionalModules.personal_backpack import PersonalBackpack
+from FunctionalModules.sign import Sign
+from FunctionalModules.activity import Activity
+from FunctionalModules.gacha_once import GachaOnce
+from FunctionalModules.gacha_ten_times import GachaTenTimes
+from FunctionalModules.shop import Shop
 #from FunctionalModules.fight import fight
 #from FunctionalModules.guessing import guessing
-from FunctionalModules.help import help
-from FunctionalModules.devtool import devtool
+from FunctionalModules.help import Help
+from FunctionalModules.devtool import Devtool
 
 logging.basicConfig(level = logging.DEBUG)
 
@@ -44,45 +44,45 @@ class MyClient(qq.Client):
             #     return
 
             if '##菜单' in message.content:
-                await menu(message)
+                await Menu(message)
 
             if '##注册' in message.content:
-                await register(message)
+                await Register(message)
 
             if '##个人信息' in message.content:
-                await personalInfo(message)
+                await PersonalInfo(message)
 
             if '##个人背包' in message.content:
-                await personalBackpack(message)
+                await PersonalBackpack(message)
 
             if '##签到' in message.content:
-                await sign(message)
+                await Sign(message)
 
             if '##活动' in message.content:
-                await activity(message)
+                await Activity(message)
 
             if '##单抽' in message.content:
-                await gachaOnce(message)
+                await GachaOnce(message)
 
             if '##十连抽' in message.content:
-                await gachaTenTimes(message)
+                await GachaTenTimes(message)
 
             if '##商店' in message.content:
-                await shop(message)
+                await Shop(message)
 
             if '##对战' in message.content:
                 await message.reply('此功能正在开发中（Upgrading），请耐心等待', mention_author = message.author)
-                #await fight(self, message)
+                #await Fight(self, message)
 
             if '##猜题' in message.content:
                 await message.reply('此功能正在开发中（Delayed），请耐心等待', mention_author = message.author)
-                #await guessing(self, message)
+                #await Guessing(self, message)
 
             if '##帮助' in message.content:
-                await help(message)
+                await Help(message)
 
             if '##devtool' in message.content:
-                await devtool(message)
+                await Devtool(message)
 
         except:
             await message.reply('\n发生异常:\n' + traceback.format_exc(), mention_author = message.author)

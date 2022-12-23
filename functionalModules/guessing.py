@@ -5,7 +5,7 @@ import pandas
 Delayed WIP
 """
 
-async def guessing(self: qq.Client, message: qq.Message):
+async def Guessing(self: qq.Client, message: qq.Message):
     command = message.content.split()
     try:
         questionType = command[1]
@@ -25,23 +25,23 @@ async def guessing(self: qq.Client, message: qq.Message):
             await message.reply('没有你想找的题库，请检查你的题库名字，或输入 /猜题 题库 来查看可用的题库类型', mention_author = message.author)
     await message.reply('你选择了MC的题库', mention_author = message.author)
     #正式开始
-    detailShowed, answer: qq.Message = guessingGame(self = self, message = message, item_name = item_name, questionDetail = questionDetail)
+    detailShowed, answer: qq.Message = GuessingGame(self = self, message = message, item_name = item_name, questionDetail = questionDetail)
     #判断是否是超时结束
     if detailShowed == 'timeout':
         await message.reply('超出5分钟没有人回答，游戏已结束', mention_author = message.author)
         return
     winner = str(answer.author)
-    user_basic_info = pandas.read_json('./users/' + winner + '_basic_info.json', typ = 'series')
+    user_basic_info = pandas.read_json('./Users/' + winner + '_basic_info.json', typ = 'series')
     #奖励计算
     skyDustAwarded = 500 - detailShowed * 20
     if skyDustAwarded <= 100:
         skyDustAwarded = 100
     await answer.reply('恭喜你回答正确，获得' + skyDustAwarded + '天空之尘', mention_author = answer.author)
     user_basic_info['sky_dust_amount'] += skyDustAwarded
-    user_basic_info.to_json('./users/' + winner + '_basic_info.json', indent = 4)
+    user_basic_info.to_json('./Users/' + winner + '_basic_info.json', indent = 4)
 
 
-async def guessingGame(self: qq.Client, message: qq.Message, item_name, questionDetail: pandas.DataFrame):
+async def GuessingGame(self: qq.Client, message: qq.Message, item_name, questionDetail: pandas.DataFrame):
     detailShowed = 0
     while True:
         #抽取提示

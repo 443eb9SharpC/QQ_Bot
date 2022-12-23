@@ -1,0 +1,14 @@
+{
+    "0":{
+        "item_amount":0,
+        "item_rarity":0,
+        "item_rarity_raw":0.0,
+        "item_step":0
+    },
+    "\u751f\u547d\u836f\u6c34":{
+        "item_amount":1,
+        "item_rarity":"Common",
+        "item_rarity_raw":0.4,
+        "item_step":2
+    }
+}

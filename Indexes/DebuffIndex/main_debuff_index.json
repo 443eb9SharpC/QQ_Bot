@@ -1,0 +1,37 @@
+{
+    "黑暗":{
+        "HP":0,
+        "attack":-0.1,
+        "defence":0,
+        "crit_rate":-0.05,
+        "is_permanent":"False"
+    },
+    "燃烧":{
+        "HP":-0.03,
+        "attack":0,
+        "defence":0,
+        "crit_rate":0,
+        "is_permanent":"False"
+    },
+    "中毒":{
+        "HP":-0.03,
+        "attack":-0.07,
+        "defence":0,
+        "crit_rate":0,
+        "is_permanent":"False"
+    },
+    "恐惧":{
+        "HP":0,
+        "attack":-0.1,
+        "defence":-0.05,
+        "crit_rate":0,
+        "is_permanent":"False"
+    },
+    "失血":{
+        "HP":-0.05,
+        "attack":0,
+        "defence":0,
+        "crit_rate":0,
+        "is_permanent":"True"
+    }
+}

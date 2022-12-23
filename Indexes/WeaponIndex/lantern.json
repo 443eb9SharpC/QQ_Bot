@@ -1,0 +1,23 @@
+{
+    "apply_debuff燃烧":{
+        "chance":0.1,
+        "duration":5,
+        "intensity":null,
+        "specific_elem_1":null,
+        "specific_elem_2":null
+    },
+    "attack":{
+        "chance":0.1,
+        "duration":2,
+        "intensity":0.1,
+        "specific_elem_1":null,
+        "specific_elem_2":null
+    },
+    "specific_attack":{
+        "chance":null,
+        "duration":null,
+        "intensity":0.15,
+        "specific_elem_1":"ice",
+        "specific_elem_2":null
+    }
+}

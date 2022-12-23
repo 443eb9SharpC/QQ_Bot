@@ -1,0 +1,16 @@
+{
+    "apply_debuff冻结":{
+        "chance":0.09,
+        "duration":1,
+        "intensity":null,
+        "specific_elem_1":null,
+        "specific_elem_2":null
+    },
+    "specific_attack":{
+        "chance":null,
+        "duration":null,
+        "intensity":0.2,
+        "specific_elem_1":"spirit",
+        "specific_elem_2":"wood"
+    }
+}

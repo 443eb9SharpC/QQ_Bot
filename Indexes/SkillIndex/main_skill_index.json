@@ -1,0 +1,20 @@
+{
+    "治愈":{
+        "HP":0.2,
+        "attack":0,
+        "defence":0,
+        "crit_rate":0
+    },
+    "腐蚀":{
+        "HP":0,
+        "attack":0,
+        "defence":-0.3,
+        "crit_rate":0
+    },
+    "劝善":{
+        "HP":0,
+        "attack":0,
+        "defence":-0.3,
+        "crit_rate":-1
+    }
+}

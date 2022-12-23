@@ -3,36 +3,42 @@
         "weapon_attack":1250,
         "weapon_rarity":"Legendary",
         "weapon_rarity_raw":0.05,
+        "weapon_step":6,
         "weapon_price":2000
     },
     "霜锋碎光":{
         "weapon_attack":1000,
         "weapon_rarity":"Legendary",
         "weapon_rarity_raw":0.05,
+        "weapon_step":4,
         "weapon_price":1800
     },
     "仪典花刃":{
         "weapon_attack":700,
         "weapon_rarity":"Epic",
         "weapon_rarity_raw":0.15,
+        "weapon_step":4,
         "weapon_price":1000
     },
     "影":{
         "weapon_attack":800,
         "weapon_rarity":"Epic",
         "weapon_rarity_raw":0.15,
+        "weapon_step":3,
         "weapon_price":1250
     },
     "咖喱棒":{
         "weapon_attack":250,
         "weapon_rarity":"Rare",
         "weapon_rarity_raw":0.3,
+        "weapon_step":3,
         "weapon_price":500
     },
     "大剑":{
         "weapon_attack":100,
         "weapon_rarity":"Common",
         "weapon_rarity_raw":0.5,
+        "weapon_step":2,
         "weapon_price":100
     }
 }

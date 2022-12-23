@@ -4,7 +4,7 @@ import datetime
 
 import ToolModules.other_module as other_module
 
-async def gachaTenTimes(message: qq.Message):
+async def GachaTenTimes(message: qq.Message):
     activity_info = pandas.read_json('./Activities/activity_info.json', typ = 'series')
     end_time = datetime.date(activity_info['endYear'], activity_info['endMonth'], activity_info['endDay'])
     days_remain = end_time.__sub__(datetime.date.today()).days
@@ -13,15 +13,15 @@ async def gachaTenTimes(message: qq.Message):
         return
     user = str(message.author)
     try:
-        user_basic_info = pandas.read_json('./users/' + user + '_basic_info.json', typ = 'series')
+        user_basic_info = pandas.read_json('./Users/' + user + '_basic_info.json', typ = 'series')
     except:
         await message.reply('抽卡失败，请先注册', mention_author = message.author)
         return
     if user_basic_info['sky_dust_amount'] < 1000:
         await message.reply('天空之尘不足', mention_author = message.author)
         return
-    user_weapon_form = pandas.read_json('./users/' + user + '_weapon_form.json', orient = 'index')
-    user_item_form = pandas.read_json('./users/' + user + '_basic_info.json', orient = 'index')
+    user_weapon_form = pandas.read_json('./Users/' + user + '_weapon_form.json', orient = 'index')
+    user_item_form = pandas.read_json('./Users/' + user + '_basic_info.json', orient = 'index')
     output_weapon_form = pandas.DataFrame(columns = ['weapon_attack', 'weapon_rarity', 'weapon_rarity_raw'])
     output_item_form = pandas.DataFrame(columns = ['item_amount', 'item_rarity', 'item_rarity_raw'])
     output_earth_dust_amount = 0
@@ -29,7 +29,7 @@ async def gachaTenTimes(message: qq.Message):
     final_output_form = ''
     user_basic_info['sky_dust_amount'] -= 1000
     for i in range(10):
-        result = other_module.gacha()
+        result = other_module.Gacha()
         #判断抽到的东西的类型
         #武器
         if 'weapon_attack' in result.columns:
@@ -60,12 +60,12 @@ async def gachaTenTimes(message: qq.Message):
                 else:
                     output_item_form = pandas.concat(objs = [output_item_form, result])
     #保存数据
-    user_basic_info.to_json('./users/' + user + '_basic_info.json', indent = 4)
-    user_weapon_form.to_json('./users/' + user + '_weapon_form.json', indent = 4, orient = 'index')
-    user_item_form.to_json('./users/' + user + '_item_form.json', indent = 4, orient = 'index')
+    user_basic_info.to_json('./Users/' + user + '_basic_info.json', indent = 4)
+    user_weapon_form.to_json('./Users/' + user + '_weapon_form.json', indent = 4, orient = 'index')
+    user_item_form.to_json('./Users/' + user + '_item_form.json', indent = 4, orient = 'index')
     #处理表格数据
-    final_output_form += other_module.convertToOutputForm(pandas_form = output_weapon_form, form_type = 'weapon')
+    final_output_form += other_module.ConvertToOutputForm(pandas_form = output_weapon_form, form_type = 'weapon')
     final_output_form += '\n'
-    final_output_form += other_module.convertToOutputForm(pandas_form = output_item_form, form_type = 'item')
+    final_output_form += other_module.ConvertToOutputForm(pandas_form = output_item_form, form_type = 'item')
     final_output_form += '\n\n总计获得' + str(output_sky_dust_amount) + '个天空之尘及' + str(output_earth_dust_amount) + '个大地之烬'
     await message.reply(final_output_form, mention_author = message.author)

@@ -1,0 +1,23 @@
+{
+    "apply_buff护佑":{
+        "chance":0.08,
+        "duration":2,
+        "intensity":null,
+        "specific_elem_1":null,
+        "specific_elem_2":null
+    },
+    "attack":{
+        "chance":0.13,
+        "duration":1,
+        "intensity":0.07,
+        "specific_elem_1":null,
+        "specific_elem_2":null
+    },
+    "specific_attack":{
+        "chance":null,
+        "duration":null,
+        "intensity":0.07,
+        "specific_elem_1":"ice",
+        "specific_elem_2":"darkness"
+    }
+}

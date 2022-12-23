@@ -1,11 +1,11 @@
 import qq
 
-async def help(message: qq.Message):
-    command = message.content.split()
+async def Help(message: qq.Message):
     try:
-        module_name = command[2]
+        command = message.content.split('##')[1].split()
+        module_name = command[1]
     except:
-        await message.reply('请输入正确格式的命令：/帮助||[模块名称]', mention_author = message.author)
+        await message.reply('请输入正确格式的命令：/帮助 [模块名称]', mention_author = message.author)
         return
     match module_name:
         case '菜单':
@@ -25,9 +25,9 @@ async def help(message: qq.Message):
         case '十连抽':
             await message.reply('消耗1000天空之尘一次性进行10次单抽', mention_author = message.author)
         case '对战':
-            await message.reply(open('./texts/help/fight.txt', mode = 'r', encoding = 'utf8').read(), mention_author = message.author)
+            await message.reply(open('./Texts/Help/fight.txt', mode = 'r', encoding = 'utf8').read(), mention_author = message.author)
         case '猜题':
-            await message.reply(open('./texts/help/guessing.txt', mode = 'r', encoding = 'utf8').read(), mention_author = message.author)
+            await message.reply(open('./Texts/Help/guessing.txt', mode = 'r', encoding = 'utf8').read(), mention_author = message.author)
         case '帮助':
             await message.reply('使用方法：\n/帮助||[模块名称]\n显示各模块的详细说明', mention_author = message.author)
         case _:
