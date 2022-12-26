@@ -1,4 +1,4 @@
 
-modifysky_dust_amount||[str:user]||[int:sky_dust_amount]：修改指定用户的天空之尘数
-showBasicInfoFull||[str:user]：展示指定用户个人信息
+modifysky_dust_amount [str:user] [int:sky_dust_amount]：修改指定用户的天空之尘数
+showBasicInfoFull [str:user]：展示指定用户个人信息
 help：显示帮助

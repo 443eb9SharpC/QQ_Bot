@@ -1,23 +1,44 @@
 {
+    "腐蚀技能书":{
+        "item_amount":1,
+        "item_rarity":"Legendary",
+        "item_rarity_raw":0.02,
+        "item_step":4,
+        "item_price":750
+    },
+    "劝善技能书":{
+        "item_amount":1,
+        "item_rarity":"Epic",
+        "item_rarity_raw":0.1,
+        "item_step":4,
+        "item_price":500
+    },
+    "治愈技能书":{
+        "item_amount":1,
+        "item_rarity":"Rare",
+        "item_rarity_raw":0.38,
+        "item_step":3,
+        "item_price":300
+    },
     "恢复药水":{
         "item_amount":1,
         "item_rarity":"Rare",
-        "item_rarity_raw":0.3,
-        "potion_step":3,
+        "item_rarity_raw":0.38,
+        "item_step":3,
         "item_price":150
     },
     "力量药水":{
         "item_amount":1,
         "item_rarity":"Common",
         "item_rarity_raw":0.5,
-        "potion_step":2,
+        "item_step":2,
         "item_price":50
     },
     "生命药水":{
         "item_amount":1,
         "item_rarity":"Common",
         "item_rarity_raw":0.5,
-        "potion_step":2,
+        "item_step":2,
         "item_price":50
     }
 }

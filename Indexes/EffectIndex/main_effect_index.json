@@ -33,5 +33,40 @@
         "defence":0,
         "crit_rate":0,
         "is_permanent":"True"
+    },
+    "冻结":{
+        "HP":0,
+        "attack":0,
+        "defence":0,
+        "crit_rate":0,
+        "is_permanent":"False"
+    },
+    "护佑":{
+        "HP":0,
+        "attack":0,
+        "defence":-0.1,
+        "crit_rate":0,
+        "is_permanent":"False"
+    },
+    "力量":{
+        "HP":0,
+        "attack":0.07,
+        "defence":0,
+        "crit_rate":0,
+        "is_permanent":"False"
+    },
+    "鼓舞":{
+        "HP":0.1,
+        "attack":0,
+        "defence":0,
+        "crit_rate":0,
+        "is_permanent":"False"
+    },
+    "狂暴":{
+        "HP":0,
+        "attack":0.1,
+        "defence":0,
+        "crit_rate":0.2,
+        "is_permanent":"False"
     }
 }

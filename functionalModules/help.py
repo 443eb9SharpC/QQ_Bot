@@ -2,7 +2,7 @@ import qq
 
 async def Help(message: qq.Message):
     try:
-        command = message.content.split('##')[1].split()
+        command = message.content.split('/')[1].split()
         module_name = command[1]
     except:
         await message.reply('请输入正确格式的命令：/帮助 [模块名称]', mention_author = message.author)
@@ -21,7 +21,7 @@ async def Help(message: qq.Message):
         case '活动':
             await message.reply('展示当前正在进行的活动，即卡池', mention_author = message.author)
         case '单抽':
-            await message.reply('消耗100天空之尘进行一次单抽，重复获得的每个武器会被转换成25大地之烬，大地之烬可以在商店兑换物品。出货权重：\n0.1 Legendary, 0.2 Epic, 0.3 Rare, 0.4 Common\n其中1/3概率为武器，2/3概率为物品', mention_author = message.author)
+            await message.reply('消耗100天空之尘进行一次单抽，重复获得的每个武器会被转换成25大地之烬，大地之烬可以在商店兑换物品。出货权重：\n0.02 Legendary, 0.1 Epic, 0.38 Rare, 0.5 Common\n其中1/3概率为武器，2/3概率为物品', mention_author = message.author)
         case '十连抽':
             await message.reply('消耗1000天空之尘一次性进行10次单抽', mention_author = message.author)
         case '对战':
@@ -29,6 +29,6 @@ async def Help(message: qq.Message):
         case '猜题':
             await message.reply(open('./Texts/Help/guessing.txt', mode = 'r', encoding = 'utf8').read(), mention_author = message.author)
         case '帮助':
-            await message.reply('使用方法：\n/帮助||[模块名称]\n显示各模块的详细说明', mention_author = message.author)
+            await message.reply('使用方法：\n/帮助 [模块名称]\n显示各模块的详细说明', mention_author = message.author)
         case _:
             await message.reply('未找到此模块', mention_author = message.author)

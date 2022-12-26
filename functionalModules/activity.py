@@ -12,11 +12,13 @@ async def Activity(message: qq.Message):
     days_before_end = end_time.__sub__(datetime.date.today()).days
     if days_before_end < 0:
         await message.reply('当前无正在进行的活动', mention_author = message.author)
-    elif days_before_start >0:
+        return
+    elif days_before_start > 0:
         if days_before_start < 5:
             await message.reply('活动' + activity_info['activityName'] + '即将在' + str(days_before_start) + '天后开启', mention_author = message.author)
         else:
             await message.reply('当前无正在进行的活动', mention_author = message.author)
+        return
     else:
         activity_weapon_form = other_module.ConvertToOutputForm(pandas_form = pandas.read_json('./Activities/activity_weapon_form.json', orient = 'index'), form_type = 'weapon')
         activity_item_form = other_module.ConvertToOutputForm(pandas_form = pandas.read_json('./Activities/activity_item_form.json', orient = 'index'), form_type = 'item')

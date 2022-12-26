@@ -62,7 +62,7 @@ def ConvertToOutputForm(pandas_form: pandas.DataFrame, form_type, price_included
                 for index, row in pandas_form.iterrows():
                     if row[0] == 0:
                         continue
-                    result += '\n' + index + str(row['armor_defence']) + ' | ' + row['armor_rarity']
+                    result += '\n' + index + ' | ' + str(row['armor_defence']) + ' | ' + row['armor_rarity']
                     if price_included == True:
                         result += ' | ' + str(row['armor_price'])
     return result
@@ -103,7 +103,7 @@ def UpdateUserInGameInfo(user):
     if user_in_game_info['steps_per_round'] > 15:
         user_in_game_info['steps_per_round'] = 15
     #更新基础暴击率
-    user_in_game_info['basic_crit_rate'] = user_in_game_info['basic_crit_rate'] * 0.01 + 0.05
+    user_in_game_info['basic_crit_rate'] = user_in_game_info['current_level'] * 0.01 + 0.05
     #防止暴击率溢出
     if user_in_game_info['basic_crit_rate'] > 0.3:
         user_in_game_info['basic_crit_rate'] = 0.3

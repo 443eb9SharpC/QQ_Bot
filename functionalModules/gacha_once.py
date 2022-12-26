@@ -6,10 +6,18 @@ import ToolModules.other_module as other_module
 
 async def GachaOnce(message: qq.Message):
     activity_info = pandas.read_json('./Activities/activity_info.json', typ = 'series')
+    start_time = datetime.date(activity_info['startYear'], activity_info['startMonth'], activity_info['startDay'])
     end_time = datetime.date(activity_info['endYear'], activity_info['endMonth'], activity_info['endDay'])
-    days_remain = end_time.__sub__(datetime.date.today()).days
-    if days_remain <= 0:
+    days_before_start = start_time.__sub__(datetime.date.today()).days
+    days_before_end = end_time.__sub__(datetime.date.today()).days
+    if days_before_end < 0:
         await message.reply('当前无正在进行的活动', mention_author = message.author)
+        return
+    elif days_before_start > 0:
+        if days_before_start < 5:
+            await message.reply('活动' + activity_info['activityName'] + '即将在' + str(days_before_start) + '天后开启', mention_author = message.author)
+        else:
+            await message.reply('当前无正在进行的活动', mention_author = message.author)
         return
     user = str(message.author)
     try:

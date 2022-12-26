@@ -53,7 +53,7 @@ async def Shop(message: qq.Message):
                             user_item_form.to_json('./Users/' + user + '_item_form.json', indent = 4, orient = 'index')
                         else:
                             user_item_form.to_json('./Users/' + user + '_item_form.json', indent = 4, orient = 'index')
-                            pandas.concat(objs = [user_item_form, pandas.DataFrame([[item_shop.at[wanted_elem, 'item_amount'], item_shop.at[wanted_elem, 'item_rarity'], item_shop.at[wanted_elem, 'item_rarity_raw'], item_shop.at[wanted_elem, 'item_step']]], columns = ['item_amount', 'item_rarity', 'item_rarity_raw'], index = [wanted_elem])]).to_json('./Users/' + user + '_item_form.json', indent = 4, orient = 'index')
+                            pandas.concat(objs = [user_item_form, pandas.DataFrame([[item_shop.at[wanted_elem, 'item_amount'], item_shop.at[wanted_elem, 'item_rarity'], item_shop.at[wanted_elem, 'item_rarity_raw'], item_shop.at[wanted_elem, 'item_step']]], columns = ['item_amount', 'item_rarity', 'item_rarity_raw', 'item_step'], index = [wanted_elem])]).to_json('./Users/' + user + '_item_form.json', indent = 4, orient = 'index')
                         user_basic_info.to_json('./Users/' + user + '_basic_info.json', indent = 4)
                         await message.reply('购买' + wanted_elem + '成功，你可以 /个人背包 来查看', mention_author = message.author)
                     else:
@@ -70,7 +70,7 @@ async def Shop(message: qq.Message):
                         if user_basic_info['earth_dust_amount'] >= armor_shop.at[wanted_elem, 'armor_price']:
                             user_basic_info['earth_dust_amount'] -= armor_shop.at[wanted_elem, 'weapon_price']
                             user_basic_info.to_json('./Users/' + user + '_basic_info.json', indent = 4, orient = 'index')
-                            pandas.concat(objs = [user_armor_form, pandas.DataFrame([[armor_shop.at[wanted_elem, 'armor_defence'], armor_shop.at[wanted_elem, 'armor_rarity'], armor_shop.at[wanted_elem, 'armor_rarity_raw'], armor_shop.at[wanted_elem, 'armor_step']]], columns = ['armor_defence', 'armor_rarity', 'armor_rarity_raw'], index = [wanted_elem])]).to_json('./Users/' + user + '_armor_form.json', indent = 4, orient = 'index')
+                            pandas.concat(objs = [user_armor_form, pandas.DataFrame([[armor_shop.at[wanted_elem, 'armor_defence'], armor_shop.at[wanted_elem, 'armor_rarity'], armor_shop.at[wanted_elem, 'armor_rarity_raw'], armor_shop.at[wanted_elem, 'armor_crit_rate'], armor_shop.at[wanted_elem, 'armor_element'], armor_shop.at[wanted_elem, 'armor_step']]], columns = ['armor_defence', 'armor_rarity', 'armor_rarity_raw', 'armor_step'], index = [wanted_elem])]).to_json('./Users/' + user + '_armor_form.json', indent = 4, orient = 'index')
                             await message.reply('购买' + wanted_elem + '成功，你可以 /个人背包 来查看', mention_author = message.author)
                         else:
                             await message.reply('该商品需要' + str(armor_shop.at[wanted_elem, 'armor_price']) + '个大地之烬，你还差' + str(armor_shop.at[wanted_elem, 'armor_price'] - user_basic_info['earth_dust_amount']) + '个大地之烬', mention_author = message.author)

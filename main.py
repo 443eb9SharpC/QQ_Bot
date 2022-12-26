@@ -13,7 +13,7 @@ from FunctionalModules.activity import Activity
 from FunctionalModules.gacha_once import GachaOnce
 from FunctionalModules.gacha_ten_times import GachaTenTimes
 from FunctionalModules.shop import Shop
-#from FunctionalModules.fight import fight
+from FunctionalModules.fight import Fight
 #from FunctionalModules.guessing import guessing
 from FunctionalModules.help import Help
 from FunctionalModules.devtool import Devtool
@@ -71,8 +71,8 @@ class MyClient(qq.Client):
                 await Shop(message)
 
             if '##对战' in message.content:
-                await message.reply('此功能正在开发中（Upgrading），请耐心等待', mention_author = message.author)
-                #await Fight(self, message)
+                await message.reply('ATTENTION:此功能正处于测试状态，可能会存在未修复的bug', mention_author = message.author)
+                await Fight(self, message)
 
             if '##猜题' in message.content:
                 await message.reply('此功能正在开发中（Delayed），请耐心等待', mention_author = message.author)

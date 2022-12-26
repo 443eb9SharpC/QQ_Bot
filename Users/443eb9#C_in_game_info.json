@@ -1,9 +1,9 @@
 {
-    "current_level":0,
-    "basic_HP":2000,
-    "basic_attack":200,
-    "basic_defence":20,
+    "current_level":0.0,
+    "basic_HP":2000.0,
+    "basic_attack":200.0,
+    "basic_defence":20.0,
     "basic_crit_rate":0.05,
-    "current_exp":0,
-    "steps_per_round":10
+    "current_exp":0.0,
+    "steps_per_round":7.0
 }
