@@ -23,5 +23,5 @@ async def Register(message: qq.Message):
     #armor_form
     pandas.DataFrame(data = [[0, 0, 0, 0, '0', 0], [10, 'Special', -1, 0.02, 'spirit', 1]], columns = ['armor_defence', 'armor_rarity', 'armor_rarity_raw','armor_crit_rate', 'armor_element', 'armor_step'], index = [0, '新手长袍']).to_json('./Users/' + user + '_armor_form.json', indent = 4, orient = 'index')
     #in_game_info
-    pandas.Series(index = ['current_level', 'basic_HP', 'basic_attack', 'basic_defence', 'basic_crit_rate', 'current_exp', 'steps_per_round'], data = [0, 2000, 200, 20, 0.05 ,0 , 7]).to_json('./Users/' + user + '_in_game_info.json', indent = 4)
+    pandas.Series(index = ['current_level', 'basic_HP', 'basic_attack', 'basic_defence', 'basic_crit_rate', 'current_exp', 'steps_per_round'], data = [0, 2000, 150, 20, 0.05 ,0 , 7]).to_json('./Users/' + user + '_in_game_info.json', indent = 4)
     await message.reply('注册成功，如果你不知道如何使用这个机器人，你可以输入 /菜单', mention_author = message.author)

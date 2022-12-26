@@ -114,7 +114,7 @@ async def FightMain(self: qq.Client, host_message: qq.Message, guest_message: qq
             await guest_message.reply(f'超过2分钟{guest}未回应默认投降', mention_author = guest_message.author)
             return host, guest
         #判断命令格式
-        if '##' in command_message.content:
+        if '/' in command_message.content:
             command = command_message.content.split('/')[1].split()
             guest_skill_form = []
             reply_message = ''
@@ -163,7 +163,7 @@ async def FightMain(self: qq.Client, host_message: qq.Message, guest_message: qq
             await host_message.reply(f'超过2分钟{host}未回应默认投降', mention_author = host_message.author)
             return guest, host
         #判断命令格式
-        if '##' in command_message.content:
+        if '/' in command_message.content:
             command = command_message.content.split('/')[1].split()
             host_skill_form = []
             reply_message = ''
@@ -211,7 +211,7 @@ async def FightMain(self: qq.Client, host_message: qq.Message, guest_message: qq
             await host_message.reply(f'超过2分钟{guest}未回应默认投降', mention_author = guest_message.author)
             return host, guest
         #判断命令格式
-        if '##' in command_message.content:
+        if '/' in command_message.content:
             armor = command_message.content.split('/')[1]
             if not armor in guest_armor_form.index:
                 await host_message.reply(f'无效的盔甲：{armor}，请检查该盔甲是否存在且拥有，并重新输入', mention_author = guest_message.author)
@@ -232,7 +232,7 @@ async def FightMain(self: qq.Client, host_message: qq.Message, guest_message: qq
             await host_message.reply(f'超过2分钟{host}未回应默认投降', mention_author = host_message.author)
             return host, host
         #判断命令格式
-        if '##' in command_message.content:
+        if '/' in command_message.content:
             armor = command_message.content.split('/')[1]
             if not armor in host_armor_form.index:
                 await host_message.reply(f'无效的盔甲：{armor}，请检查该盔甲是否存在且拥有，并重新输入', mention_author = host_message.author)
@@ -325,7 +325,7 @@ async def FightMain(self: qq.Client, host_message: qq.Message, guest_message: qq
                 await host_message.reply(f'{current_user}超过2分钟没有回答，默认投降')
                 return waiting_user, current_user
             #检查命令格式
-            if '##' in user_action_message.content:
+            if '/' in user_action_message.content:
                 user_action = user_action_message.content.split('/')[1].split()
                 #再检查一遍
                 if len(user_action) == 2:

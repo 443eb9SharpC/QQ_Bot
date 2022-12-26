@@ -1,9 +1,9 @@
 {
-    "sky_dust_amount":20,
-    "signed_days":2,
-    "last_activity_year":2022,
-    "last_activity_month":12,
-    "last_activity_day":26,
+    "sky_dust_amount":0,
+    "signed_days":0,
+    "last_activity_year":1,
+    "last_activity_month":1,
+    "last_activity_day":1,
     "earth_dust_amount":0,
-    "continuous_signed":1
+    "continuous_signed":0
 }

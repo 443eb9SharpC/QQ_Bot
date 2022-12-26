@@ -31,7 +31,7 @@ class MyClient(qq.Client):
             if message.author.id == self.user.id:
                 return
 
-            if message.channel.id != 13630884 and str(message.author) != '443eb9#C' and '##' in message.content:
+            if message.channel.id != 13630884 and str(message.author) != '443eb9#C' and '/' in message.content:
                 await message.reply('请不要使用开发模式下的命令', mention_author = message.author)
                 return
             
@@ -43,45 +43,45 @@ class MyClient(qq.Client):
             #     await message.reply('请不要在工程部使用机器人', mention_author = message.author)
             #     return
 
-            if '##菜单' in message.content:
+            if '/菜单' in message.content:
                 await Menu(message)
 
-            if '##注册' in message.content:
+            if '/注册' in message.content:
                 await Register(message)
 
-            if '##个人信息' in message.content:
+            if '/个人信息' in message.content:
                 await PersonalInfo(message)
 
-            if '##个人背包' in message.content:
+            if '/个人背包' in message.content:
                 await PersonalBackpack(message)
 
-            if '##签到' in message.content:
+            if '/签到' in message.content:
                 await Sign(message)
 
-            if '##活动' in message.content:
+            if '/活动' in message.content:
                 await Activity(message)
 
-            if '##单抽' in message.content:
+            if '/单抽' in message.content:
                 await GachaOnce(message)
 
-            if '##十连抽' in message.content:
+            if '/十连抽' in message.content:
                 await GachaTenTimes(message)
 
-            if '##商店' in message.content:
+            if '/商店' in message.content:
                 await Shop(message)
 
-            if '##对战' in message.content:
+            if '/对战' in message.content:
                 await message.reply('ATTENTION:此功能正处于测试状态，可能会存在未修复的bug', mention_author = message.author)
                 await Fight(self, message)
 
-            if '##猜题' in message.content:
+            if '/猜题' in message.content:
                 await message.reply('此功能正在开发中（Delayed），请耐心等待', mention_author = message.author)
                 #await Guessing(self, message)
 
-            if '##帮助' in message.content:
+            if '/帮助' in message.content:
                 await Help(message)
 
-            if '##devtool' in message.content:
+            if '/devtool' in message.content:
                 await Devtool(message)
 
         except:

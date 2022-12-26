@@ -5,21 +5,31 @@ import ToolModules.other_module as other_module
 
 async def Shop(message: qq.Message):
     user = str(message.author)
-    command = message.content.split('/')[1]
+    command = message.content.split('/')[1].split()
     weapon_shop = pandas.read_json('./Shop/weapon_shop.json', orient = 'index')
     item_shop = pandas.read_json('./Shop/item_shop.json', orient = 'index')
     armor_shop = pandas.read_json('./Shop/armor_shop.json', orient = 'index')
-    user_basic_info = pandas.read_json('./Users/' + user + '_basic_info.json', typ = 'series')
+    try:
+        user_basic_info = pandas.read_json('./Users/' + user + '_basic_info.json', typ = 'series')
+    except:
+        await message.reply('获取失败，请先注册', mention_author = message.author)
+        return
     match len(command):
         case 1:
-            final_shop = other_module.ConvertToOutputForm(pandas_form = pandas.read_json('./Shop/weapon_shop.json', orient = 'index'), form_type = 'weapon', priceIncluded = True) + '\n' + other_module.ConvertToOutputForm(pandas_form = pandas.read_json('./Shop/item_shop.json' ,orient = 'index'), form_type = 'item', priceIncluded = True)
-            await message.reply(final_shop + '\n\n输入 /商店 [武器/物品/盔甲] [名字] 即可购买', mention_author = message.author)
+            await message.reply('请输入有效的命令：/商店 [武器/物品/盔甲]', mention_author = message.author)
         case 2:
-            await message.reply('请输入有效的命令：/商店 [武器/物品/盔甲] [名字]', mention_author = message.author)
+            match command[1]:
+                case '武器':
+                    await message.reply(other_module.ConvertToOutputForm(pandas_form = weapon_shop, form_type = 'weapon', price_included = True) + '\n\n输入 /商店 武器 [名字] 即可购买', mention_author = message.author)
+                case '物品':
+                    await message.reply(other_module.ConvertToOutputForm(pandas_form = item_shop, form_type = 'item', price_included = True) + '\n\n输入 /商店 物品 [名字] 即可购买', mention_author = message.author)
+                case '盔甲':
+                    await message.reply(other_module.ConvertToOutputForm(pandas_form = armor_shop, form_type = 'armor', price_included = True) + '\n\n输入 /商店 盔甲 [名字] 即可购买', mention_author = message.author)
+                case _:
+                    await message.reply('无效的商品类型：' + command[1] + '请输入有效的商品类型：[武器/物品/盔甲]', mention_author = message.author)
         case 3:
             wanted_type = command[1]
             wanted_elem = command[2]
-
             #区分种类
             if wanted_type == '武器':
                 #检查是否存在这个商品
@@ -38,7 +48,7 @@ async def Shop(message: qq.Message):
                         else:
                             await message.reply('该商品需要' + str(weapon_shop.at[wanted_elem, 'weapon_price']) + '个大地之烬，你还差' + str(weapon_shop.at[wanted_elem, 'weapon_price'] - user_basic_info['earth_dust_amount']) + '个大地之烬', mention_author = message.author)
                 else:
-                    await message.reply('未找到该商品，你可以输入 /商店 来查看有哪些商品')
+                    await message.reply('未找到该商品，你可以输入 /商店 武器 来查看有哪些商品')
 
             elif wanted_type == '物品':
                 #检查是否存在这个商品
@@ -59,7 +69,7 @@ async def Shop(message: qq.Message):
                     else:
                         await message.reply('该商品需要' + str(item_shop.at[wanted_elem, 'item_price']) + '个大地之烬，你还差' + str(item_shop.at[wanted_elem, 'item_price'] - user_basic_info['earth_dust_amount']) + '个大地之烬', mention_author = message.author)
                 else:
-                    await message.reply('未找到该商品，你可以输入 /商店 来查看有哪些商品')
+                    await message.reply('未找到该商品，你可以输入 /商店 物品 来查看有哪些商品')
 
             elif wanted_type == '盔甲':
                 if wanted_elem in armor_shop.index:
@@ -75,7 +85,6 @@ async def Shop(message: qq.Message):
                         else:
                             await message.reply('该商品需要' + str(armor_shop.at[wanted_elem, 'armor_price']) + '个大地之烬，你还差' + str(armor_shop.at[wanted_elem, 'armor_price'] - user_basic_info['earth_dust_amount']) + '个大地之烬', mention_author = message.author)
                 else:
-                    await message.reply('未找到该商品，你可以输入 /商店 来查看有哪些商品')
-
+                    await message.reply('未找到该商品，你可以输入 /商店 盔甲 来查看有哪些商品')
             else:
-                await message.reply('请输入有效的商品类型：武器或物品')
+                await message.reply('请输入有效的商品类型：[武器/物品/盔甲]')

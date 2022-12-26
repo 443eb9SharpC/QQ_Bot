@@ -6,8 +6,8 @@ import ToolModules.other_module as other_module
 
 async def GachaTenTimes(message: qq.Message):
     activity_info = pandas.read_json('./Activities/activity_info.json', typ = 'series')
-    start_time = datetime.date(activity_info['startYear'], activity_info['startMonth'], activity_info['startDay'])
-    end_time = datetime.date(activity_info['endYear'], activity_info['endMonth'], activity_info['endDay'])
+    start_time = datetime.date(activity_info['start_year'], activity_info['start_month'], activity_info['start_day'])
+    end_time = datetime.date(activity_info['end_year'], activity_info['end_month'], activity_info['end_day'])
     days_before_start = start_time.__sub__(datetime.date.today()).days
     days_before_end = end_time.__sub__(datetime.date.today()).days
     if days_before_end < 0:
