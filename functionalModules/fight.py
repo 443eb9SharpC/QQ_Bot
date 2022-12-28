@@ -17,7 +17,7 @@ async def Fight(self: qq.Client, message: qq.Message):
     else:
         checker.close()
     try:
-        guest = message.content.split('/')[1].split()[1]
+        guest = message.content.split('##')[1].split()[1]
     except:
         await message.reply('请输入有效的命令：/对战 [对方的名字]', mention_author = message.author)
         return
@@ -115,7 +115,7 @@ async def FightMain(self: qq.Client, host_message: qq.Message, guest_message: qq
             return host, guest
         #判断命令格式
         if '/' in command_message.content:
-            command = command_message.content.split('/')[1].split()
+            command = command_message.content.split('##')[1].split()
             guest_skill_form = []
             reply_message = ''
             if '跳过' in command_message.content:
@@ -164,7 +164,7 @@ async def FightMain(self: qq.Client, host_message: qq.Message, guest_message: qq
             return guest, host
         #判断命令格式
         if '/' in command_message.content:
-            command = command_message.content.split('/')[1].split()
+            command = command_message.content.split('##')[1].split()
             host_skill_form = []
             reply_message = ''
             if '跳过' in command_message.content:
@@ -212,7 +212,7 @@ async def FightMain(self: qq.Client, host_message: qq.Message, guest_message: qq
             return host, guest
         #判断命令格式
         if '/' in command_message.content:
-            armor = command_message.content.split('/')[1]
+            armor = command_message.content.split('##')[1]
             if not armor in guest_armor_form.index:
                 await host_message.reply(f'无效的盔甲：{armor}，请检查该盔甲是否存在且拥有，并重新输入', mention_author = guest_message.author)
                 continue
@@ -233,7 +233,7 @@ async def FightMain(self: qq.Client, host_message: qq.Message, guest_message: qq
             return host, host
         #判断命令格式
         if '/' in command_message.content:
-            armor = command_message.content.split('/')[1]
+            armor = command_message.content.split('##')[1]
             if not armor in host_armor_form.index:
                 await host_message.reply(f'无效的盔甲：{armor}，请检查该盔甲是否存在且拥有，并重新输入', mention_author = host_message.author)
                 continue
@@ -326,7 +326,7 @@ async def FightMain(self: qq.Client, host_message: qq.Message, guest_message: qq
                 return waiting_user, current_user
             #检查命令格式
             if '/' in user_action_message.content:
-                user_action = user_action_message.content.split('/')[1].split()
+                user_action = user_action_message.content.split('##')[1].split()
                 #再检查一遍
                 if len(user_action) == 2:
                     action_type = user_action[0]

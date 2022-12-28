@@ -1,5 +1,6 @@
 import qq
 import pandas
+import random
 import datetime
 
 async def Sign(message: qq.Message):
@@ -11,7 +12,7 @@ async def Sign(message: qq.Message):
         return
     #检测签到间隔时间
     last_activity_time = datetime.date(user_basic_info['last_activity_year'], user_basic_info['last_activity_month'], user_basic_info['last_activity_day'])
-    days_interval = last_activity_time.__sub__(datetime.date.today()).days
+    days_interval = datetime.date.today().__sub__(last_activity_time).days
     if days_interval == 0:
         await message.reply('签到失败，请不要在一天之内多次签到', mention_author = message.author)
     else:
@@ -30,7 +31,13 @@ async def Sign(message: qq.Message):
         user_basic_info['last_activity_month'] = datetime.date.today().month
         user_basic_info['last_activity_day'] = datetime.date.today().day
         user_basic_info.to_json('./Users/' + str(message.author) + '_basic_info.json', indent = 4, orient = 'index')
+        #读取毒鸡汤
+        soup = open('./Texts/PoisonChickenSoup/soup.txt', mode = 'r', encoding = 'utf8').read().split('\n')
+        line_num = random.randint(0, 99)
+        reply_message = '签到成功，'
         if user_basic_info['continuous_signed'] > 3:
-            await message.reply('你目前有' + str(user_basic_info['sky_dust_amount']) + '个天空之尘，已累计签到' + str(user_basic_info['signed_days']) + '天，已连续签到' + str(user_basic_info['continuous_signed']) + '天，额外获得' + str((user_basic_info['continuous_signed'] - 3) % 30 * 5) + '个天空之尘', mention_author = message.author)
+            reply_message += '连续签到' + str(user_basic_info['continuous_signed']) + '天，天空之尘+' + str((user_basic_info['continuous_signed'] - 3) % 30 * 5)
         else:
-            await message.reply('你目前有' + str(user_basic_info['sky_dust_amount']) + '个天空之尘，已累计签到' + str(user_basic_info['signed_days']) + '天，已连续签到' + str(user_basic_info['continuous_signed']) + '天', mention_author = message.author)
+            reply_message += '天空之尘+10'
+        reply_message += '\n今日毒鸡汤：' + soup[line_num]
+        await message.reply(reply_message, mention_author = message.author)

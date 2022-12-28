@@ -2,7 +2,7 @@ import qq
 
 async def Help(message: qq.Message):
     try:
-        command = message.content.split('/')[1].split()
+        command = message.content.split('##')[1].split()
         module_name = command[1]
     except:
         await message.reply('请输入正确格式的命令：/帮助 [模块名称]', mention_author = message.author)

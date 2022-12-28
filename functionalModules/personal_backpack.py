@@ -14,7 +14,7 @@ async def PersonalBackpack(message: qq.Message):
         return
     #判断是否为空
     try:
-        command = message.content.split('/')[1].split()
+        command = message.content.split('##')[1].split()
     except:
         await message.reply('请输入有效的命令：/个人背包 [武器/物品/盔甲] [整理]')
     else:

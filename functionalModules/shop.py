@@ -5,7 +5,7 @@ import ToolModules.other_module as other_module
 
 async def Shop(message: qq.Message):
     user = str(message.author)
-    command = message.content.split('/')[1].split()
+    command = message.content.split('##')[1].split()
     weapon_shop = pandas.read_json('./Shop/weapon_shop.json', orient = 'index')
     item_shop = pandas.read_json('./Shop/item_shop.json', orient = 'index')
     armor_shop = pandas.read_json('./Shop/armor_shop.json', orient = 'index')

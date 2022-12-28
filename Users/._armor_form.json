@@ -1,0 +1,18 @@
+{
+    "0":{
+        "armor_defence":0,
+        "armor_rarity":0,
+        "armor_rarity_raw":0,
+        "armor_crit_rate":0.0,
+        "armor_element":"0",
+        "armor_step":0
+    },
+    "\u65b0\u624b\u957f\u888d":{
+        "armor_defence":10,
+        "armor_rarity":"Special",
+        "armor_rarity_raw":-1,
+        "armor_crit_rate":0.02,
+        "armor_element":"spirit",
+        "armor_step":1
+    }
+}

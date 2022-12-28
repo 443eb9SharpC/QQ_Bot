@@ -4,7 +4,7 @@ import pandas
 async def Devtool(message: qq.Message):
     #判断身份
     if str(message.author) == '443eb9#C':
-        command = message.content.split('/')[1].split()
+        command = message.content.split('##')[1].split()
         #判断命令
         try:
             #修改指定用户的天空之尘

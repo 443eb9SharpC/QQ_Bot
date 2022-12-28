@@ -1,0 +1,14 @@
+{
+    "0":{
+        "weapon_attack":0,
+        "weapon_rarity":0,
+        "weapon_rarity_raw":0,
+        "weapon_step":0
+    },
+    "\u65b0\u624b\u5251":{
+        "weapon_attack":50,
+        "weapon_rarity":"Special",
+        "weapon_rarity_raw":-1,
+        "weapon_step":2
+    }
+}
