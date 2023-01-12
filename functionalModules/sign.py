@@ -36,7 +36,7 @@ async def Sign(message: qq.Message):
         line_num = random.randint(0, 99)
         reply_message = '签到成功，'
         if user_basic_info['continuous_signed'] > 3:
-            reply_message += '连续签到' + str(user_basic_info['continuous_signed']) + '天，天空之尘+' + str((user_basic_info['continuous_signed'] - 3) % 30 * 5)
+            reply_message += '连续签到' + str(user_basic_info['continuous_signed']) + '天，天空之尘+' + str(10 + (user_basic_info['continuous_signed'] - 3) % 30 * 5)
         else:
             reply_message += '天空之尘+10'
         reply_message += '\n今日毒鸡汤：' + soup[line_num]
